@@ -12,45 +12,60 @@
   let noDFT = 1024;
   let noPoints = 150;
   let freqres= (1/noDFT)*(1/Ts);
+
+  let jj = 0;
+  let kk = 0;
   var radio; 
 
+
+
 function setup() {
-    createCanvas(1300, 1000);  
-    textSize(32);
-    text('word', 10, 30);
+    createCanvas(1300, 610);  
+    textFont('Georgia');
+    textSize(30);
+    text('Frequency Resolution, Windowing', width/2 - 200, 30);
+    
+    textSize(20);
+    text('Amplitude', 150, 600);
+
+    textSize(20);
+    text('Frequency', 150 + 230, 600);
+
+    textSize(20);
+    text('Time', 150 + 210 + 290, 600);
 
     radio = createRadio(); 
     radio.option('Rectangular Window');   
     radio.option('Hamming Winodw');
     radio.style("width", "500px");    
-    radio.position(800, 10); 
+    radio.position(800 + 40, 560); 
     radio.value('Rectangular Window'); 
 
     slider_A = createSlider(0, 1, 1, 0.0005);
-    slider_A.position(10 + 50, 10);
+    slider_A.position(10 + 50 + 40, 560);
     slider_A.style('width', '200px');
 
     slider_f = createSlider(0, 4, 1, 0.0005);
-    slider_f.position(250 + 50, 10);
+    slider_f.position(250 + 50 + 40, 560);
     slider_f.style('width', '200px');
 
     slider_T = createSlider(0, (1/Ts)*2, 1/Ts, 1);
-    slider_T.position(500 + 50, 10);
+    slider_T.position(500 + 50 + 40, 560);
     slider_T.style('width', '200px');
 
     updateSignals()
 
     // plot1:1
     plot1 = new GPlot(this);
-    plot1.setPos(0, 0);
-    plot1.setOuterDim(1200, 400);
-    plot1.setBoxBgColor ('black');
+    plot1.setPos(40, 40);
+    plot1.setOuterDim(1200, 250);
+    plot1.setBoxBgColor ('#333333');
 
     // plot2:1
     plot2 = new GPlot(this);
-    plot2.setPos(0, 400);
-    plot2.setOuterDim(1200, 500);
-    plot2.setBoxBgColor ('black');
+    plot2.setPos(40, 260);
+    plot2.setOuterDim(1200, 300);
+    plot2.setBoxBgColor ('#333333');
 
     // Add the points
     plot1.setPoints(sig3);
@@ -64,9 +79,9 @@ function setup() {
     plot1.getLayer("layer 2").setLineWidth(3);
     
     // Set the plot1 title and the axis labels
-    plot1.setTitleText("A very simple example");
-    plot1.getXAxis().setAxisLabelText("x axis");
-    plot1.getYAxis().setAxisLabelText("y axis");
+    plot1.setTitleText("Time domain");
+    plot1.getXAxis().setAxisLabelText("time (sec)");
+    plot1.getYAxis().setAxisLabelText("Amplitude");
     // plot1.getXAxis().setNTicks(20);
     plot1.getXAxis().setTicksSeparation (0.1) 
     plot1.setFontName('Georgia')
@@ -85,12 +100,14 @@ function setup() {
     plot2.getLayer("layer 2").setLineWidth(2);    
   
     // Set the plot2 title and the axis labels
-    plot2.setTitleText("A very simple example");
-    plot2.getXAxis().setAxisLabelText("x axis");
-    plot2.getYAxis().setAxisLabelText("y axis");
+    plot2.setTitleText("Frequency domain");
+    plot2.getXAxis().setAxisLabelText("Frequency Hz");
+    plot2.getYAxis().setAxisLabelText("20 log10 ( )");
     plot2.getXAxis().setTicksSeparation (1) 
     plot2.getYAxis().setTicksSeparation (10) 
     plot2.setYLim(-30, 45);
+    plot2.setFontName('Georgia')
+
 
     updatePlot()
     
@@ -234,7 +251,7 @@ function updateSignals()
 
 function draw()
 {
-//  background(220);
+
 }
 
 function updatewithNewinput()
@@ -251,6 +268,7 @@ function defaultDraw(plotIP)
   plotIP.drawXAxis();
   plotIP.drawYAxis();
   plotIP.drawTitle();
+  // plotIP.drawGridLines(GPlot.BOTH);
   plotIP.drawGridLines(GPlot.BOTH);
   plotIP.drawLines();
   // plot2.drawPoints();
