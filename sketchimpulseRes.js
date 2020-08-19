@@ -11,7 +11,7 @@ function setup() {
 
     textFont('Georgia');
     textSize(30);
-    text('Impulse Response Definition', width/2 - 200, 30);
+    text('Impulse Response Definition', 500, 30);
 
     textFont('Georgia');
     textSize(16);
@@ -25,7 +25,7 @@ function setup() {
     
     // plot1:1
     plot1 = new GPlot(this);
-    plot1.setPos(40, 40);
+    plot1.setPos(200, 40);
     plot1.setOuterDim(1000, 400);
     plot1.addLayer("layer 1", sig1);
 

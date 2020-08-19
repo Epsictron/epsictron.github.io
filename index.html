@@ -1,25 +1,59 @@
-<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<style>
-h1 {text-align: center;}
-p {text-align: center;}
-div {text-align: center;}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- font awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <!--Import Google Icon Font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+  <title>epsiCTRON</title>
+
 </head>
 <body>
 
-<h1>Sig Proc</h1>
+  <!-- navbar -->
+  <header>
+    <nav class="nav-wrapper teal darken-4">
+      <div class="container">
+        <a href="#" class="brand-logo">epsiCTRON</a>
+        <a href="#" class="sidenav-trigger" data-target="mobile-menu">
+          <i class="material-icons">menu</i>
+        </a>
+        <ul class="right hide-on-med-and-down">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <!-- <li><a href="#">Contact</a></li> -->
+        </ul>
+        <ul class="sidenav grey lighten-2" id="mobile-menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <!-- <li><a href="#">Contact</a></li> -->
+        </ul>
+      </div>
+    </nav>
+  </header>
 
-<p>A set of interactive basic signal processing concepts:</p>
+  <div class="container">
+    <h5 class = "center-align">Basics of Signal Processing</h5>
+    <div class="collection">
+      <a href="FrequencyRes.html" class="collection-item">01. Frequency Resolution and Windowing</a>
+      <a href="impulseRes.html" class="collection-item">02. Impulse response definition</a>
+    </div>
+  </div>
 
-<nav>
-<a href="FrequencyRes.html">1. Frequency Resolution + Windowing </a>
-</nav>
 
-<nav>
-<a href="impulseRes.html">2. Impulse Response Definition</a>
-<nav>
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+  <script>
+    $(document).ready(function(){
 
+      $('.sidenav').sidenav();
+
+    });
+  </script>
 </body>
 </html>

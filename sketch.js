@@ -17,7 +17,7 @@
   let kk = 0;
   var radio; 
 
-
+  A = 20
 
 function setup() {
     createCanvas(1300, 610);  
@@ -26,31 +26,31 @@ function setup() {
     text('Frequency Resolution, Windowing', width/2 - 200, 30);
     
     textSize(20);
-    text('Amplitude', 150, 600);
+    text('Amplitude', 150, 600-A);
 
     textSize(20);
-    text('Frequency', 150 + 230, 600);
+    text('Frequency', 150 + 230, 600-A);
 
     textSize(20);
-    text('Time', 150 + 210 + 290, 600);
+    text('Time', 150 + 210 + 290, 600-A);
 
     radio = createRadio(); 
     radio.option('Rectangular Window');   
     radio.option('Hamming Winodw');
     radio.style("width", "500px");    
-    radio.position(800 + 40, 560); 
+    radio.position(800 + 40, 630); 
     radio.value('Rectangular Window'); 
 
     slider_A = createSlider(0, 1, 1, 0.0005);
-    slider_A.position(10 + 50 + 40, 560);
+    slider_A.position(10 + 50 + 40, 660-A);
     slider_A.style('width', '200px');
 
     slider_f = createSlider(0, 4, 1, 0.0005);
-    slider_f.position(250 + 50 + 40, 560);
+    slider_f.position(250 + 50 + 40, 660-A);
     slider_f.style('width', '200px');
 
     slider_T = createSlider(0, (1/Ts)*2, 1/Ts, 1);
-    slider_T.position(500 + 50 + 40, 560);
+    slider_T.position(500 + 50 + 40, 660-A);
     slider_T.style('width', '200px');
 
     updateSignals()

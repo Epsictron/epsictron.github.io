@@ -1,13 +1,57 @@
-<!DOCTYPE html><html><head>
-    <!-- link to main stylesheet -->
-    <script src="p5.min.js"></script>
-    <script src="p5.dom.min.js"></script>
-    <script src="p5.sound.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <meta charset="utf-8">
+<html lang="en">
+<head>
+  <script src="p5.min.js"></script>
+  <script src="p5.dom.min.js"></script>
+  <script src="p5.sound.min.js"></script>
 
-  </head>
-  <body>  
-    <script src="grafica.min.js"></script>
-    <script src="sketch.js"></script>
-</body></html>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- font awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <!--Import Google Icon Font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+  <title>epsiCTRON</title>
+
+</head>
+<body>
+
+  <!-- navbar -->
+  <header>
+    <nav class="nav-wrapper teal darken-4">
+      <div class="container">
+        <a href="#" class="brand-logo">epsiCTRON</a>
+        <a href="#" class="sidenav-trigger" data-target="mobile-menu">
+          <i class="material-icons">menu</i>
+        </a>
+        <ul class="right hide-on-med-and-down">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <!-- <li><a href="#">Contact</a></li> -->
+        </ul>
+        <ul class="sidenav grey lighten-2" id="mobile-menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <!-- <li><a href="#">Contact</a></li> -->
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+
+  <!-- Compiled and minified JavaScript -->
+  <script src="grafica.min.js"></script>
+  <script src="sketch.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+  <script>
+    $(document).ready(function(){
+
+      $('.sidenav').sidenav();
+
+    });
+  </script>
+</body>
+</html>
