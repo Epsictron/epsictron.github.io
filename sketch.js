@@ -8,6 +8,10 @@
   let sig1_fft_mag = [];
   let sig2_fft_mag = [];
   let sig3_fft_mag = [];
+
+  let sig1_gt = [] 
+  let sig2_gt = [] 
+  
   let crossterms = []
   let noDFT = 1024;
   let noPoints = 150;
@@ -17,10 +21,12 @@
   let kk = 0;
   var radio; 
 
-  A = 20
+  A = -500
+let top_gap = 0;
 
 function setup() {
-    createCanvas(1300, 610);  
+    createCanvas(1300, 1300); 
+    background('white')
     textFont('Georgia');
     textSize(30);
     text('Frequency Resolution, Windowing', width/2 - 200, 30);
@@ -53,19 +59,31 @@ function setup() {
     slider_T.position(500 + 50 + 40, 660-A);
     slider_T.style('width', '200px');
 
+  
+    slider_P = createSlider(0, 2*PI, PI, 0.1);
+    slider_P.position(500 + 50 + 40, 700-A);
+    slider_P.style('width', '200px');
+  
+    //legend
+    fill(204, 101, 192, 127);
+    ellipse(1000, 1000, 20, 20);
+  
+    textSize(20);
+    text('x1(t) = Sin[2*PI*f1*t], f1 = 1Hz', 150 + 230, 550-A);
+  
     updateSignals()
 
     // plot1:1
     plot1 = new GPlot(this);
-    plot1.setPos(40, 40);
-    plot1.setOuterDim(1200, 250);
-    plot1.setBoxBgColor ('#333333');
+    plot1.setPos(40, top_gap);
+    plot1.setOuterDim(1200, 400);
+    plot1.setBoxBgColor ('#FFFFFF');
 
     // plot2:1
     plot2 = new GPlot(this);
-    plot2.setPos(40, 260);
-    plot2.setOuterDim(1200, 300);
-    plot2.setBoxBgColor ('#333333');
+    plot2.setPos(40, 500);
+    plot2.setOuterDim(1200, 400);
+    plot2.setBoxBgColor ('#FFFFFF');
 
     // Add the points
     plot1.setPoints(sig3);
@@ -74,9 +92,9 @@ function setup() {
     plot1.setLineColor('red')
     plot1.setLineWidth(4)
     plot1.getLayer("layer 1").setLineColor('#fae');
-    plot1.getLayer("layer 1").setLineWidth(3);
+    plot1.getLayer("layer 1").setLineWidth(2);
     plot1.getLayer("layer 2").setLineColor('#9faad1');
-    plot1.getLayer("layer 2").setLineWidth(3);
+    plot1.getLayer("layer 2").setLineWidth(2);
     
     // Set the plot1 title and the axis labels
     plot1.setTitleText("Time domain");
@@ -114,6 +132,7 @@ function setup() {
     slider_A.input(updatewithNewinput)
     slider_f.input(updatewithNewinput)
     slider_T.input(updatewithNewinput)
+    slider_P.input(updatewithNewinput)
     radio.input(updatewithNewinput)
 
     frameRate(20);
@@ -181,6 +200,7 @@ function updateSignals()
   A2        = slider_A.value()
   f2        = slider_f.value()
   NoSamples = slider_T.value()
+  phase = slider_P.value()  
   
   win = []
   win  = winfunc(NoSamples);
@@ -202,7 +222,7 @@ function updateSignals()
   for (i = 0; i < NoSamples; i++) 
   {
     x1 = cos(2*PI*f1*i*Ts);
-    x2 = A2*cos(2*PI*f2*i*Ts);
+    x2 = A2*cos(2*PI*f2*i*Ts + phase);
     x3 = x1+x2;
     
     if (winName == "Rectangular Window")
