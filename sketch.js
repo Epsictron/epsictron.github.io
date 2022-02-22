@@ -121,9 +121,9 @@ function setup() {
   
     plot2.setLineColor('red')
     plot2.setLineWidth(4)
-    plot2.getLayer("layer 1").setLineColor('#fae');
+    plot2.getLayer("layer 1").setLineColor('#9faad1');
     plot2.getLayer("layer 1").setLineWidth(2);
-    plot2.getLayer("layer 2").setLineColor('#9faad1');
+    plot2.getLayer("layer 2").setLineColor('#fae');
     plot2.getLayer("layer 2").setLineWidth(2);    
   
     // Set the plot2 title and the axis labels
