@@ -22,54 +22,63 @@
   var radio; 
 
   A = -500
+deltaa = 100
 let top_gap = 0;
 
 function setup() {
-    createCanvas(1300, 1300); 
+    createCanvas(1250, 1200); 
     background('white')
-    textFont('Georgia');
+    // textFont('Georgia');
     textSize(30);
     text('Frequency Resolution, Windowing', width/2 - 200, 30);
+  
+    // let c = color(255, 204, 0);
+    // fill(c);
+    rect(100, 950, 1120, 240, 20);
     
     textSize(20);
-    text('Amplitude', 150, 600-A);
+    text('Amplitude', 150+deltaa, 600-A);
 
     textSize(20);
-    text('Frequency', 150 + 230, 600-A);
+    text('Frequency', 150 + 230+deltaa, 600-A);
 
     textSize(20);
-    text('Time', 150 + 210 + 290, 600-A);
+    text('Time', 150 + 210 + 290+deltaa, 600-A);
+  
+    
+    textSize(20);
+    text('Phase', 150 + 210 + 600+deltaa, 600-A);
 
     radio = createRadio(); 
     radio.option('Rectangular Window');   
     radio.option('Hamming Winodw');
     radio.style("width", "500px");    
-    radio.position(800 + 40, 630); 
+    radio.position(500 , 1000); 
     radio.value('Rectangular Window'); 
 
     slider_A = createSlider(0, 1, 1, 0.0005);
-    slider_A.position(10 + 50 + 40, 660-A);
+    slider_A.position(10 + 50 + 40+deltaa, 660-A);
     slider_A.style('width', '200px');
 
     slider_f = createSlider(0, 4, 1, 0.0005);
-    slider_f.position(250 + 50 + 40, 660-A);
+    slider_f.position(250 + 50 + 40+deltaa, 660-A);
     slider_f.style('width', '200px');
 
     slider_T = createSlider(0, (1/Ts)*2, 1/Ts, 1);
-    slider_T.position(500 + 50 + 40, 660-A);
+    slider_T.position(500 + 50 + 40+deltaa, 660-A);
     slider_T.style('width', '200px');
 
   
     slider_P = createSlider(0, 2*PI, PI, 0.1);
-    slider_P.position(500 + 50 + 40, 700-A);
+    slider_P.position(500 + 400+deltaa , 660-A);
     slider_P.style('width', '200px');
   
     //legend
-    fill(204, 101, 192, 127);
-    ellipse(1000, 1000, 20, 20);
+    // fill(204, 101, 192, 127);
+    // ellipse(1000, 1000, 20, 20);
   
-    textSize(20);
-    text('x1(t) = Sin[2*PI*f1*t], f1 = 1Hz', 150 + 230, 550-A);
+    // textSize(20);
+    // text('x1(t) = Sin[2*PI*f1*t], f1 = 1Hz', 150 + 230, 550-A);
   
     updateSignals()
 
