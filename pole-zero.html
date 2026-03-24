@@ -3,6 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive Z-plane demo – place zeros and see real-time magnitude frequency response with notch visualization.">
+  <meta property="og:title" content="Pole-Zero Visualiser & Frequency Response – epsiCTRON">
+  <meta property="og:description" content="Move zeros in the Z-plane and observe the resulting magnitude frequency response in real time.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://epsictron.github.io/pole-zero.html">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>~</text></svg>">
   <title>Pole-Zero &amp; Z-Plane – epsiCTRON</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <style>
@@ -105,6 +111,15 @@
     .concept ul { list-style:none; display:flex; flex-direction:column; gap:7px; }
     .concept li { font-size:.82rem; color:var(--mid); padding-left:14px; position:relative; line-height:1.55; }
     .concept li::before { content:'›'; position:absolute; left:0; color:var(--accent); font-weight:700; }
+
+    /* ── FOOTER ── */
+    footer { background: var(--dark); color: rgba(255,255,255,.5); text-align: center; padding: 24px 5%; font-size: .78rem; }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── SCROLL ANIMATIONS ── */
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
   </style>
 </head>
 <body>
@@ -192,7 +207,7 @@
   </div>
 
   <!-- Key Concepts -->
-  <div class="concept">
+  <div class="concept fade-in">
     <h3>Key Concepts</h3>
     <ul>
       <li><strong>Zeros</strong> — a zero at z = re<sup>jθ</sup> forces H(z) = 0 at that point. When evaluated on the unit circle (z = e<sup>jω</sup>), the frequency ω = θ gets completely cancelled, creating a null.</li>
@@ -508,6 +523,16 @@ document.getElementById('sl-theta').addEventListener('input', render);
 document.getElementById('sl-r').addEventListener('input', render);
 window.addEventListener('resize', render);
 document.fonts.ready.then(render);
+
+// Scroll animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 </script>
+
+<footer>
+  Built by Kishor KS · <a href="index.html">Home</a> · <a href="resume.html">Resume</a>
+</footer>
 </body>
 </html>

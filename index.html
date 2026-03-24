@@ -3,6 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Kishor KS – Senior ML/DSP Engineer. Interactive signal processing demos, deep learning, speech processing, and FMCW radar.">
+  <meta property="og:title" content="epsiCTRON – Kishor KS">
+  <meta property="og:description" content="Where Fourier Meets Backpropagation. Interactive DSP demos, deep learning, and signal processing.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://epsictron.github.io/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:creator" content="@epsiCTRON">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>~</text></svg>">
   <title>epsiCTRON – Kishor KS</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <style>
@@ -83,6 +91,21 @@
     .chip { display:inline-flex; align-items:center; gap:5px; background:#fff; border:1px solid var(--border); border-radius:100px; padding:4px 12px; font-size:.75rem; font-weight:500; color:var(--mid); text-decoration:none; transition:all .2s; }
     .chip:hover { border-color:var(--accent); color:var(--accent); }
 
+    /* FOOTER */
+    footer {
+      background: var(--dark); color: rgba(255,255,255,.5); text-align: center;
+      padding: 24px 5%; font-size: .78rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* SCROLL ANIMATIONS */
+    .fade-in {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
     /* PASSION GRID */
     .passion-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:48px; }
     @media(max-width:640px){ .passion-grid { grid-template-columns:1fr; } }
@@ -131,10 +154,10 @@
 
 <div class="page">
 
-  <div class="section-title">What Excites Me</div>
+  <div class="section-title fade-in">What Excites Me</div>
 
   <div class="passion-grid">
-    <div class="passion-card">
+    <div class="passion-card fade-in">
       <div class="passion-icon">~</div>
       <h3>Signal Processing</h3>
       <p>From the elegance of the Fourier Transform to adaptive filtering and FMCW radar — I love how signals reveal hidden structure. Spectral leakage, windowing, beamforming — it never gets old.</p>
@@ -145,7 +168,7 @@
         <span class="ptag">Speech</span>
       </div>
     </div>
-    <div class="passion-card">
+    <div class="passion-card fade-in">
       <div class="passion-icon">&#x2207;</div>
       <h3>Deep Learning</h3>
       <p>Neural nets are the ultimate function approximators. I'm fascinated by how architectures like Conformers, LSTMs, and GANs learn representations that classical methods can't match — especially in speech and audio.</p>
@@ -156,7 +179,7 @@
         <span class="ptag">GANs</span>
       </div>
     </div>
-    <div class="passion-card passion-card-wide">
+    <div class="passion-card passion-card-wide fade-in">
       <div class="passion-icon">&cap;</div>
       <h3>The Sweet Spot</h3>
       <p>The real magic happens when DSP and DL collide — phase-aware neural speech enhancement, learned spectral features for radar, CQT-domain source separation. Classical signal processing gives you the right inductive bias; deep learning fills in the gaps.</p>
@@ -169,9 +192,9 @@
     </div>
   </div>
 
-  <div class="section-title" style="margin-top:48px;">About</div>
+  <div class="section-title fade-in" style="margin-top:48px;">About</div>
 
-  <div class="about-card">
+  <div class="about-card fade-in">
     <div class="about-avatar">KK</div>
     <div class="about-text">
       <h2>Kishor KS</h2>
@@ -179,6 +202,8 @@
       <p>M.Tech from IIT Hyderabad in Communication & Signal Processing. 6+ years building signal processing and deep learning systems at Nvidia, Honeywell, PathPartner, and Meeami. Published at INTERSPEECH 2018. I built this site to share interactive explorations of the concepts I love.</p>
       <div class="about-links">
         <a href="https://twitter.com/epsiCTRON" class="chip">Twitter / X</a>
+        <a href="https://github.com/epsictron" class="chip">GitHub</a>
+        <a href="https://linkedin.com/in/kishor-ks" class="chip">LinkedIn</a>
         <a href="resume.html" class="chip">Resume →</a>
       </div>
     </div>
@@ -186,5 +211,15 @@
 
 </div>
 
+<footer>
+  Built by Kishor KS · <a href="https://github.com/epsictron/epsictron.github.io">Source on GitHub</a>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
 </body>
 </html>
