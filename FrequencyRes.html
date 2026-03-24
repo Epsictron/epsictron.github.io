@@ -1,57 +1,525 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="p5.min.js"></script>
-  <script src="p5.dom.min.js"></script>
-  <script src="p5.sound.min.js"></script>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <!-- font awesome -->
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
-  <!--Import Google Icon Font-->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <!-- Compiled and minified CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
-  <title>epsiCTRON</title>
+  <title>Frequency Domain – epsiCTRON</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent:       #00897b;
+      --accent-dark:  #004d40;
+      --accent-light: #e0f2f1;
+      --dark:   #0f172a;
+      --mid:    #334155;
+      --muted:  #64748b;
+      --border: #e2e8f0;
+      --bg:     #f8fafc;
+      --white:  #ffffff;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); line-height: 1.6; }
 
+    /* ── NAV ── */
+    nav {
+      background: var(--accent-dark);
+      padding: 0 5%;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px; position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    nav .logo { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.1rem; color:#fff; text-decoration:none; letter-spacing:1px; }
+    nav ul { list-style:none; display:flex; gap:24px; }
+    nav ul a { color:rgba(255,255,255,.8); text-decoration:none; font-size:.88rem; font-weight:500; transition:color .2s; }
+    nav ul a:hover { color:#fff; }
+    @media(max-width:520px){ nav ul { display:none; } }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--accent-dark) 0%, #00695c 100%);
+      color:#fff; padding:36px 5% 32px; position:relative; overflow:hidden;
+    }
+    .hero::after { content:''; position:absolute; right:-60px; bottom:-80px; width:260px; height:260px; border-radius:50%; background:rgba(255,255,255,.05); }
+    .hero-inner { max-width:900px; margin:auto; position:relative; z-index:1; }
+    .badge {
+      display:inline-block; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.25);
+      border-radius:100px; padding:3px 12px; font-size:.72rem; font-weight:600; letter-spacing:1px;
+      text-transform:uppercase; margin-bottom:10px;
+    }
+    .hero h1 { font-family:'Space Grotesk',sans-serif; font-size:clamp(1.4rem,4vw,2rem); font-weight:700; line-height:1.2; margin-bottom:8px; }
+    .hero p  { font-size:.88rem; opacity:.82; max-width:580px; }
+
+    /* ── PAGE ── */
+    .page { max-width:1060px; margin:0 auto; padding:24px 5% 64px; display:flex; flex-direction:column; gap:18px; }
+
+    /* ── CARD ── */
+    .card { background:var(--white); border-radius:14px; border:1px solid var(--border); box-shadow:0 1px 3px rgba(0,0,0,.06); padding:20px 22px; }
+    .card-title {
+      font-family:'Space Grotesk',sans-serif; font-size:.7rem; font-weight:700;
+      letter-spacing:1.5px; text-transform:uppercase; color:var(--accent);
+      margin-bottom:14px; display:flex; align-items:center; gap:8px;
+    }
+    .card-title::after { content:''; flex:1; height:1px; background:var(--accent-light); }
+
+    /* ── INFO PILLS ── */
+    .pills { display:flex; flex-wrap:wrap; gap:10px; }
+    .pill { background:var(--accent-light); border:1px solid #b2dfdb; border-radius:10px; padding:10px 16px; }
+    .pill .lbl { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--accent-dark); margin-bottom:2px; }
+    .pill .val { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1rem; color:var(--dark); }
+
+    /* ── CONTROLS ── */
+    .ctrl-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px 28px; }
+    @media(max-width:480px){ .ctrl-grid { grid-template-columns:1fr; } }
+    .ctrl-item label { display:flex; justify-content:space-between; align-items:center; font-size:.82rem; font-weight:600; color:var(--mid); margin-bottom:6px; }
+    .vbadge { background:var(--accent-dark); color:#fff; font-size:.72rem; font-weight:700; padding:1px 9px; border-radius:100px; font-family:'Space Grotesk',sans-serif; }
+    .ctrl-sub { font-size:.7rem; color:var(--muted); margin-top:3px; }
+    input[type=range] {
+      width:100%; height:4px; -webkit-appearance:none; appearance:none;
+      background:var(--border); border-radius:4px; outline:none; cursor:pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance:none; appearance:none; width:18px; height:18px; border-radius:50%;
+      background:var(--accent); border:2px solid #fff; box-shadow:0 1px 4px rgba(0,0,0,.2); cursor:pointer;
+    }
+    input[type=range]::-moz-range-thumb {
+      width:18px; height:18px; border-radius:50%; background:var(--accent); border:2px solid #fff; cursor:pointer;
+    }
+
+    /* ── WINDOW TOGGLE ── */
+    .win-toggle { display:flex; gap:8px; margin-top:6px; }
+    .win-btn {
+      flex:1; padding:7px 0; border-radius:8px; border:1.5px solid var(--border);
+      background:var(--bg); font-family:'Space Grotesk',sans-serif; font-size:.78rem;
+      font-weight:700; color:var(--muted); cursor:pointer; transition:all .18s;
+    }
+    .win-btn.active {
+      background:var(--accent-dark); color:#fff; border-color:var(--accent-dark);
+    }
+
+    /* ── PLOTS ── */
+    .plots-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    @media(max-width:640px){ .plots-grid { grid-template-columns:1fr; } }
+    .plot-card { padding:16px 18px; }
+    canvas { display:block; width:100%; border-radius:8px; }
+    .plot-canvas { height:260px; }
+    @media(min-width:768px){ .plot-canvas { height:320px; } }
+
+    /* Legend */
+    .legend { display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; }
+    .leg { display:flex; align-items:center; gap:6px; font-size:.73rem; font-weight:600; color:var(--mid); }
+    .leg-line { width:16px; height:3px; border-radius:2px; }
+
+    /* ── CONCEPT ── */
+    .concept { background:linear-gradient(135deg,var(--accent-light),#f0faf9); border:1px solid #b2dfdb; border-radius:12px; padding:18px 22px; }
+    .concept h3 { font-family:'Space Grotesk',sans-serif; font-size:.88rem; font-weight:700; color:var(--accent-dark); margin-bottom:10px; }
+    .concept ul { list-style:none; display:flex; flex-direction:column; gap:7px; }
+    .concept li { font-size:.82rem; color:var(--mid); padding-left:14px; position:relative; line-height:1.55; }
+    .concept li::before { content:'›'; position:absolute; left:0; color:var(--accent); font-weight:700; }
+  </style>
 </head>
 <body>
 
-  <!-- navbar -->
-  <header>
-    <nav class="nav-wrapper teal darken-4">
-      <div class="container">
-        <a href="#" class="brand-logo">epsiCTRON</a>
-        <a href="#" class="sidenav-trigger" data-target="mobile-menu">
-          <i class="material-icons">menu</i>
-        </a>
-        <ul class="right hide-on-med-and-down">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="about.html">About</a></li>
-          <!-- <li><a href="#">Contact</a></li> -->
-        </ul>
-        <ul class="sidenav grey lighten-2" id="mobile-menu">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="about.html">About</a></li>
-          <!-- <li><a href="#">Contact</a></li> -->
-        </ul>
+<!-- NAV -->
+<nav>
+  <a class="logo" href="index.html">epsiCTRON</a>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="resume.html">Resume</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="badge">01 · Frequency Domain</div>
+    <h1>Frequency Response &amp; the DFT</h1>
+    <p>Compose two sinusoids, compute the Discrete Fourier Transform, and watch how windowing, sample count, and frequency affect spectral leakage.</p>
+  </div>
+</section>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- Info pills -->
+  <div class="card">
+    <div class="card-title">Signal Properties</div>
+    <div class="pills">
+      <div class="pill"><div class="lbl">Frequency Resolution Δf</div><div class="val" id="info-df">1.00 Hz</div></div>
+      <div class="pill"><div class="lbl">x1 frequency</div><div class="val">1 Hz</div></div>
+      <div class="pill"><div class="lbl">x2 frequency f₂</div><div class="val" id="info-f2">1.00 Hz</div></div>
+      <div class="pill"><div class="lbl">Window</div><div class="val" id="info-win">Rectangular</div></div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="card">
+    <div class="card-title">Signal Parameters</div>
+    <div class="ctrl-grid">
+
+      <div class="ctrl-item">
+        <label>Amplitude A₂ <span class="vbadge" id="lbl-a2">1.00</span></label>
+        <input type="range" id="sl-a2" min="0" max="1" value="1" step="0.01">
+        <div class="ctrl-sub">Amplitude of the second sinusoid</div>
       </div>
-    </nav>
-  </header>
 
+      <div class="ctrl-item">
+        <label>Frequency f₂ (Hz) <span class="vbadge" id="lbl-f2">1.00 Hz</span></label>
+        <input type="range" id="sl-f2" min="0" max="4" value="1" step="0.01">
+        <div class="ctrl-sub">Frequency of the second sinusoid</div>
+      </div>
 
-  <!-- Compiled and minified JavaScript -->
-  <script src="grafica.min.js"></script>
-  <script src="sketch.js"></script>
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
-  <script>
-    $(document).ready(function(){
+      <div class="ctrl-item">
+        <label>N Samples <span class="vbadge" id="lbl-n">64</span></label>
+        <input type="range" id="sl-n" min="1" max="128" value="64" step="1">
+        <div class="ctrl-sub">Number of time-domain samples for DFT</div>
+      </div>
 
-      $('.sidenav').sidenav();
+      <div class="ctrl-item">
+        <label>Phase φ (rad) <span class="vbadge" id="lbl-phi">π</span></label>
+        <input type="range" id="sl-phi" min="0" max="6.2832" value="3.14159" step="0.01">
+        <div class="ctrl-sub">Phase offset of the second sinusoid</div>
+      </div>
 
+      <div class="ctrl-item" style="grid-column:1/-1">
+        <label style="margin-bottom:8px;">Window Function <span class="vbadge" id="lbl-win">Rectangular</span></label>
+        <div class="win-toggle">
+          <button class="win-btn active" id="btn-rect" onclick="setWindow('rect')">Rectangular</button>
+          <button class="win-btn"        id="btn-hamm" onclick="setWindow('hamm')">Hamming</button>
+        </div>
+        <div class="ctrl-sub">Hamming window reduces spectral leakage at the cost of resolution</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Plots -->
+  <div class="plots-grid">
+
+    <div class="card plot-card">
+      <div class="card-title">Time Domain</div>
+      <canvas id="c-time" class="plot-canvas"></canvas>
+      <div class="legend">
+        <div class="leg"><div class="leg-line" style="background:#3b82f6"></div>x₁(t)</div>
+        <div class="leg"><div class="leg-line" style="background:#f97316"></div>x₂(t)</div>
+        <div class="leg"><div class="leg-line" style="background:#ef4444"></div>x₃ = x₁+x₂</div>
+      </div>
+    </div>
+
+    <div class="card plot-card">
+      <div class="card-title">Frequency Domain (Magnitude, dB)</div>
+      <canvas id="c-freq" class="plot-canvas"></canvas>
+      <div class="legend">
+        <div class="leg"><div class="leg-line" style="background:#3b82f6"></div>X₁</div>
+        <div class="leg"><div class="leg-line" style="background:#f97316"></div>X₂</div>
+        <div class="leg"><div class="leg-line" style="background:#ef4444"></div>X₃</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Key Concepts -->
+  <div class="concept">
+    <h3>Key Concepts</h3>
+    <ul>
+      <li><strong>Frequency Resolution Δf = 1/(N·Ts)</strong> — the spacing between DFT bins equals the reciprocal of the total record length. More samples → finer resolution.</li>
+      <li><strong>Spectral Leakage</strong> — when a sinusoid does not fall exactly on a DFT bin, energy "leaks" into neighbouring bins, smearing the spectrum.</li>
+      <li><strong>Hamming Window</strong> — multiplying the time samples by w[n] = 0.54 − 0.46·cos(2πn/(N−1)) tapers the ends to zero, greatly reducing leakage. The main lobe widens slightly but side-lobes drop by ~40 dB.</li>
+      <li><strong>Try this:</strong> Set f₂ = 1.5 Hz (between bins) with Rectangular and watch the leakage. Switch to Hamming to see the improvement.</li>
+    </ul>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+// ═══════════════════════════════════════════════════
+//  Constants
+// ═══════════════════════════════════════════════════
+const Ts       = 1 / 64;   // sampling period
+const noDFT    = 1024;     // DFT size (zero-padded)
+const noPoints = 150;      // number of frequency bins to display
+
+const C1 = '#3b82f6';
+const C2 = '#f97316';
+const C3 = '#ef4444';
+
+let windowType = 'rect';
+
+// ═══════════════════════════════════════════════════
+//  Helpers
+// ═══════════════════════════════════════════════════
+function niceStep(range, targetLines) {
+  if (range <= 0) return 1;
+  const raw  = range / targetLines;
+  const mag  = Math.pow(10, Math.floor(Math.log10(raw)));
+  const n    = raw / mag;
+  const nice = n < 1.5 ? 1 : n < 3 ? 2 : n < 7 ? 5 : 10;
+  return nice * mag;
+}
+
+function niceDecimalPlaces(step) {
+  if (step >= 1)    return 0;
+  if (step >= 0.1)  return 1;
+  if (step >= 0.01) return 2;
+  return 3;
+}
+
+// ═══════════════════════════════════════════════════
+//  Signal + DFT computation
+// ═══════════════════════════════════════════════════
+function computeTimeDomain(A2, f2, phi, N) {
+  const pts = [];
+  const tMax = (N - 1) * Ts;
+  for (let i = 0; i < N; i++) {
+    const t  = i * Ts;
+    const x1 = Math.cos(2 * Math.PI * 1 * t);
+    const x2 = A2 * Math.cos(2 * Math.PI * f2 * t + phi);
+    pts.push({ x: t, y1: x1, y2: x2, y3: x1 + x2 });
+  }
+  return { pts, tMax };
+}
+
+function hammingWindow(N) {
+  const w = new Float64Array(N);
+  for (let n = 0; n < N; n++) {
+    w[n] = 0.54 - 0.46 * Math.cos(2 * Math.PI * n / (N - 1));
+  }
+  return w;
+}
+
+// Naive DFT magnitude — zero-padded to noDFT
+function computeDFT(samples) {
+  const N  = samples.length;
+  const M  = noDFT;
+  const re = new Float64Array(M);
+  const im = new Float64Array(M);
+
+  for (let k = 0; k < M; k++) {
+    let sumR = 0, sumI = 0;
+    for (let n = 0; n < N; n++) {
+      const angle = 2 * Math.PI * k * n / M;
+      sumR += samples[n] * Math.cos(angle);
+      sumI -= samples[n] * Math.sin(angle);
+    }
+    re[k] = sumR;
+    im[k] = sumI;
+  }
+  return { re, im };
+}
+
+function magnitudeDB(re, im, K) {
+  const pts = [];
+  const fs  = 1 / Ts;
+  for (let k = 0; k < K; k++) {
+    const freq = k * fs / noDFT;
+    const mag  = Math.sqrt(re[k] * re[k] + im[k] * im[k]);
+    const db   = mag > 0 ? 20 * Math.log10(mag) : -120;
+    pts.push({ x: freq, y: Math.max(-80, db) });
+  }
+  return pts;
+}
+
+function getSignalSamples(A2, f2, phi, N, key) {
+  const w = windowType === 'hamm' ? hammingWindow(N) : null;
+  const s = new Float64Array(N);
+  for (let i = 0; i < N; i++) {
+    const t  = i * Ts;
+    const x1 = Math.cos(2 * Math.PI * 1 * t);
+    const x2 = A2 * Math.cos(2 * Math.PI * f2 * t + phi);
+    let val = key === 'y1' ? x1 : key === 'y2' ? x2 : (x1 + x2);
+    s[i] = w ? val * w[i] : val;
+  }
+  return s;
+}
+
+// ═══════════════════════════════════════════════════
+//  Generic canvas chart renderer
+// ═══════════════════════════════════════════════════
+function drawChart(canvas, seriesList, cfg) {
+  const dpr = window.devicePixelRatio || 1;
+  const cw  = canvas.clientWidth;
+  const ch  = canvas.clientHeight;
+  if (canvas.width  !== Math.round(cw * dpr) ||
+      canvas.height !== Math.round(ch * dpr)) {
+    canvas.width  = Math.round(cw * dpr);
+    canvas.height = Math.round(ch * dpr);
+  }
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const p  = v => v * dpr;
+  const ML = p(52), MR = p(16), MT = p(12), MB = p(42);
+  const PW = canvas.width  - ML - MR;
+  const PH = canvas.height - MT - MB;
+  const { xMin, xMax, yMin, yMax } = cfg;
+
+  const mx = x => ML + (x - xMin) / (xMax - xMin) * PW;
+  const my = y => MT + (1 - (y - yMin) / (yMax - yMin)) * PH;
+
+  // background
+  ctx.fillStyle = '#f8fafc';
+  ctx.fillRect(ML, MT, PW, PH);
+
+  ctx.font        = `${p(10)}px Inter,system-ui,sans-serif`;
+  ctx.fillStyle   = '#94a3b8';
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth   = p(0.75);
+
+  // Y grid
+  for (let y = Math.ceil(yMin / cfg.yStep) * cfg.yStep; y <= yMax + 1e-9; y += cfg.yStep) {
+    const py = my(y);
+    ctx.setLineDash([p(3), p(4)]);
+    ctx.beginPath(); ctx.moveTo(ML, py); ctx.lineTo(ML + PW, py); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    ctx.fillText(y.toFixed(cfg.yDec ?? 1), ML - p(6), py);
+  }
+
+  // X grid
+  for (let x = Math.ceil(xMin / cfg.xStep) * cfg.xStep; x <= xMax + 1e-9; x += cfg.xStep) {
+    const px = mx(x);
+    ctx.setLineDash([p(3), p(4)]);
+    ctx.beginPath(); ctx.moveTo(px, MT); ctx.lineTo(px, MT + PH); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText(x.toFixed(cfg.xDec ?? 0), px, MT + PH + p(5));
+  }
+
+  // zero line
+  if (yMin < 0 && yMax > 0) {
+    const py = my(0);
+    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = p(0.8);
+    ctx.beginPath(); ctx.moveTo(ML, py); ctx.lineTo(ML + PW, py); ctx.stroke();
+  }
+
+  // border
+  ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = p(1);
+  ctx.strokeRect(ML, MT, PW, PH);
+
+  // clip
+  ctx.save();
+  ctx.beginPath(); ctx.rect(ML, MT, PW, PH); ctx.clip();
+
+  seriesList.forEach(({ pts, xKey, yKey, color, lw, dash }) => {
+    if (!pts || pts.length < 2) return;
+    const xk = xKey ?? 'x';
+    ctx.strokeStyle = color;
+    ctx.lineWidth   = p(lw ?? 1.8);
+    ctx.lineJoin    = 'round';
+    ctx.setLineDash(dash ? dash.map(p) : []);
+    ctx.beginPath();
+    pts.forEach((pt, i) => {
+      const px = mx(pt[xk]);
+      const py = my(Math.max(yMin - 5, Math.min(yMax + 5, pt[yKey])));
+      i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
     });
-  </script>
+    ctx.stroke();
+    ctx.setLineDash([]);
+  });
+
+  ctx.restore();
+
+  // axis labels
+  ctx.fillStyle    = '#64748b';
+  ctx.font         = `${p(10.5)}px Inter,system-ui,sans-serif`;
+  ctx.textBaseline = 'bottom'; ctx.textAlign = 'center';
+  ctx.fillText(cfg.xLabel, ML + PW / 2, canvas.height - p(2));
+
+  ctx.save();
+  ctx.translate(p(13), MT + PH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.textBaseline = 'top';
+  ctx.fillText(cfg.yLabel, 0, 0);
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════
+//  Render
+// ═══════════════════════════════════════════════════
+const cvTime = document.getElementById('c-time');
+const cvFreq = document.getElementById('c-freq');
+
+function render() {
+  const A2  = +document.getElementById('sl-a2').value;
+  const f2  = +document.getElementById('sl-f2').value;
+  const N   = +document.getElementById('sl-n').value;
+  const phi = +document.getElementById('sl-phi').value;
+
+  // Update labels
+  document.getElementById('lbl-a2').textContent  = A2.toFixed(2);
+  document.getElementById('lbl-f2').textContent  = f2.toFixed(2) + ' Hz';
+  document.getElementById('lbl-n').textContent   = N;
+  const phiRatio = phi / Math.PI;
+  document.getElementById('lbl-phi').textContent = phiRatio.toFixed(2) + 'π';
+
+  // Info pills
+  const df = 1 / (N * Ts);
+  document.getElementById('info-df').textContent  = df.toFixed(3) + ' Hz';
+  document.getElementById('info-f2').textContent  = f2.toFixed(2) + ' Hz';
+  document.getElementById('info-win').textContent = windowType === 'rect' ? 'Rectangular' : 'Hamming';
+
+  // ── Time domain ──
+  const { pts: tPts, tMax } = computeTimeDomain(A2, f2, phi, N);
+  const tStep = niceStep(tMax, 5);
+
+  drawChart(cvTime, [
+    { pts: tPts, yKey: 'y1', color: C1 },
+    { pts: tPts, yKey: 'y2', color: C2 },
+    { pts: tPts, yKey: 'y3', color: C3, lw: 2.2 },
+  ], {
+    xMin: 0, xMax: tMax, yMin: -(1 + A2) * 1.15, yMax: (1 + A2) * 1.15,
+    xStep: tStep, yStep: niceStep((1 + A2) * 2.3, 5),
+    xLabel: 'Time (s)', yLabel: 'Amplitude',
+    xDec: 2, yDec: 1,
+  });
+
+  // ── Frequency domain ──
+  const s1 = getSignalSamples(A2, f2, phi, N, 'y1');
+  const s2 = getSignalSamples(A2, f2, phi, N, 'y2');
+  const s3 = getSignalSamples(A2, f2, phi, N, 'y3');
+
+  const dft1 = computeDFT(s1);
+  const dft2 = computeDFT(s2);
+  const dft3 = computeDFT(s3);
+
+  const fPts1 = magnitudeDB(dft1.re, dft1.im, noPoints);
+  const fPts2 = magnitudeDB(dft2.re, dft2.im, noPoints);
+  const fPts3 = magnitudeDB(dft3.re, dft3.im, noPoints);
+
+  const fs = 1 / Ts;
+  const fMax = noPoints * fs / noDFT;
+
+  drawChart(cvFreq, [
+    { pts: fPts1, xKey: 'x', yKey: 'y', color: C1 },
+    { pts: fPts2, xKey: 'x', yKey: 'y', color: C2 },
+    { pts: fPts3, xKey: 'x', yKey: 'y', color: C3, lw: 2.2 },
+  ], {
+    xMin: 0, xMax: fMax, yMin: -80, yMax: 10,
+    xStep: 1, yStep: 20,
+    xLabel: 'Frequency (Hz)', yLabel: 'Magnitude (dB)',
+    xDec: 0, yDec: 0,
+  });
+}
+
+// ═══════════════════════════════════════════════════
+//  Window toggle
+// ═══════════════════════════════════════════════════
+function setWindow(type) {
+  windowType = type;
+  document.getElementById('btn-rect').classList.toggle('active', type === 'rect');
+  document.getElementById('btn-hamm').classList.toggle('active', type === 'hamm');
+  document.getElementById('lbl-win').textContent = type === 'rect' ? 'Rectangular' : 'Hamming';
+  render();
+}
+
+// ═══════════════════════════════════════════════════
+//  Events
+// ═══════════════════════════════════════════════════
+['sl-a2', 'sl-f2', 'sl-n', 'sl-phi'].forEach(id => {
+  document.getElementById(id).addEventListener('input', render);
+});
+window.addEventListener('resize', render);
+document.fonts.ready.then(render);
+</script>
 </body>
 </html>
