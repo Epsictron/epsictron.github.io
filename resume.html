@@ -361,10 +361,84 @@
       border-radius: 100px;
     }
 
+    /* ── DSP DEMOS ── */
+    .demo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .demo-card {
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: box-shadow .2s, transform .2s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      background: var(--white);
+    }
+    .demo-card:hover {
+      box-shadow: 0 6px 20px rgba(0,137,123,.14);
+      transform: translateY(-3px);
+    }
+    .demo-thumb {
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+    .demo-thumb.t1 { background: linear-gradient(135deg, #004d40, #00897b); }
+    .demo-thumb.t2 { background: linear-gradient(135deg, #00695c, #26a69a); }
+    .demo-thumb.t3 { background: linear-gradient(135deg, #00838f, #004d40); }
+    .demo-body { padding: 14px 16px; }
+    .demo-num {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .demo-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--dark);
+      line-height: 1.35;
+      margin-bottom: 6px;
+    }
+    .demo-tech {
+      font-size: 0.72rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      background: #dcfce7;
+      color: #166534;
+      padding: 2px 8px;
+      border-radius: 100px;
+    }
+    .live-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #16a34a;
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .3; }
+    }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .grid { grid-template-columns: 1fr; }
       .proj-grid { grid-template-columns: 1fr; }
+      .demo-grid { grid-template-columns: 1fr; }
       nav ul { display: none; }
     }
   </style>
@@ -574,6 +648,47 @@
                 <span class="pub-venue"><i class="fas fa-external-link-alt" style="font-size:.7rem;margin-right:4px;"></i>INTERSPEECH 2018</span>
               </a>
             </div>
+          </div>
+        </div>
+
+        <!-- Interactive DSP Demos -->
+        <div class="card">
+          <div class="section-hd"><i class="fas fa-wave-square"></i> Interactive DSP Demos</div>
+          <div class="demo-grid">
+
+            <a class="demo-card" href="FrequencyRes.html" target="_blank" rel="noopener">
+              <div class="demo-thumb t1">〜</div>
+              <div class="demo-body">
+                <div class="demo-num">01 · Frequency Domain</div>
+                <div class="demo-name">Frequency Resolution &amp; Windowing</div>
+                <div class="demo-tech">
+                  <i class="fas fa-code fa-xs"></i> p5.js &nbsp;·&nbsp; <span class="live-badge">Live</span>
+                </div>
+              </div>
+            </a>
+
+            <a class="demo-card" href="impulseRes.html" target="_blank" rel="noopener">
+              <div class="demo-thumb t2">δ</div>
+              <div class="demo-body">
+                <div class="demo-num">02 · Time Domain</div>
+                <div class="demo-name">Impulse Response Definition</div>
+                <div class="demo-tech">
+                  <i class="fas fa-code fa-xs"></i> p5.js &nbsp;·&nbsp; <span class="live-badge">Live</span>
+                </div>
+              </div>
+            </a>
+
+            <a class="demo-card" href="polezero.html" target="_blank" rel="noopener">
+              <div class="demo-thumb t3">Z</div>
+              <div class="demo-body">
+                <div class="demo-num">03 · Z-Plane</div>
+                <div class="demo-name">Movement of Zeros in Z-Plane</div>
+                <div class="demo-tech">
+                  <i class="fas fa-video fa-xs"></i> Manim &nbsp;·&nbsp; <span class="live-badge">Live</span>
+                </div>
+              </div>
+            </a>
+
           </div>
         </div>
 
