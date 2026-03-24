@@ -1,1 +1,514 @@
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Used <a href="https://twitter.com/hashtag/Manim?src=hash&amp;ref_src=twsrc%5Etfw">#Manim</a> <a href="https://twitter.com/3blue1brown?ref_src=twsrc%5Etfw">@3blue1brown</a> <a href="https://twitter.com/vcubingx?ref_src=twsrc%5Etfw">@vcubingx</a> <a href="https://t.co/VHZfOMiPJT">pic.twitter.com/VHZfOMiPJT</a></p>&mdash; Kishor KS (@KSKishor13252) <a href="https://twitter.com/KSKishor13252/status/1306226312198012929?ref_src=twsrc%5Etfw">September 16, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pole-Zero &amp; Z-Plane – epsiCTRON</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent:       #00897b;
+      --accent-dark:  #004d40;
+      --accent-light: #e0f2f1;
+      --dark:   #0f172a;
+      --mid:    #334155;
+      --muted:  #64748b;
+      --border: #e2e8f0;
+      --bg:     #f8fafc;
+      --white:  #ffffff;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); line-height: 1.6; }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--accent-dark);
+      padding: 0 5%;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px; position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    nav .logo { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.1rem; color:#fff; text-decoration:none; letter-spacing:1px; }
+    nav ul { list-style:none; display:flex; gap:24px; }
+    nav ul a { color:rgba(255,255,255,.8); text-decoration:none; font-size:.88rem; font-weight:500; transition:color .2s; }
+    nav ul a:hover { color:#fff; }
+    @media(max-width:520px){ nav ul { display:none; } }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--accent-dark) 0%, #00695c 100%);
+      color:#fff; padding:36px 5% 32px; position:relative; overflow:hidden;
+    }
+    .hero::after { content:''; position:absolute; right:-60px; bottom:-80px; width:260px; height:260px; border-radius:50%; background:rgba(255,255,255,.05); }
+    .hero-inner { max-width:900px; margin:auto; position:relative; z-index:1; }
+    .badge {
+      display:inline-block; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.25);
+      border-radius:100px; padding:3px 12px; font-size:.72rem; font-weight:600; letter-spacing:1px;
+      text-transform:uppercase; margin-bottom:10px;
+    }
+    .hero h1 { font-family:'Space Grotesk',sans-serif; font-size:clamp(1.4rem,4vw,2rem); font-weight:700; line-height:1.2; margin-bottom:8px; }
+    .hero p  { font-size:.88rem; opacity:.82; max-width:580px; }
+
+    /* ── PAGE ── */
+    .page { max-width:1060px; margin:0 auto; padding:24px 5% 64px; display:flex; flex-direction:column; gap:18px; }
+
+    /* ── CARD ── */
+    .card { background:var(--white); border-radius:14px; border:1px solid var(--border); box-shadow:0 1px 3px rgba(0,0,0,.06); padding:20px 22px; }
+    .card-title {
+      font-family:'Space Grotesk',sans-serif; font-size:.7rem; font-weight:700;
+      letter-spacing:1.5px; text-transform:uppercase; color:var(--accent);
+      margin-bottom:14px; display:flex; align-items:center; gap:8px;
+    }
+    .card-title::after { content:''; flex:1; height:1px; background:var(--accent-light); }
+
+    /* ── INFO PILLS ── */
+    .pills { display:flex; flex-wrap:wrap; gap:10px; }
+    .pill { background:var(--accent-light); border:1px solid #b2dfdb; border-radius:10px; padding:10px 16px; }
+    .pill .lbl { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--accent-dark); margin-bottom:2px; }
+    .pill .val { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1rem; color:var(--dark); }
+
+    /* ── CONTROLS ── */
+    .ctrl-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px 28px; }
+    @media(max-width:480px){ .ctrl-grid { grid-template-columns:1fr; } }
+    .ctrl-item label { display:flex; justify-content:space-between; align-items:center; font-size:.82rem; font-weight:600; color:var(--mid); margin-bottom:6px; }
+    .vbadge { background:var(--accent-dark); color:#fff; font-size:.72rem; font-weight:700; padding:1px 9px; border-radius:100px; font-family:'Space Grotesk',sans-serif; }
+    .ctrl-sub { font-size:.7rem; color:var(--muted); margin-top:3px; }
+    input[type=range] {
+      width:100%; height:4px; -webkit-appearance:none; appearance:none;
+      background:var(--border); border-radius:4px; outline:none; cursor:pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance:none; appearance:none; width:18px; height:18px; border-radius:50%;
+      background:var(--accent); border:2px solid #fff; box-shadow:0 1px 4px rgba(0,0,0,.2); cursor:pointer;
+    }
+    input[type=range]::-moz-range-thumb {
+      width:18px; height:18px; border-radius:50%; background:var(--accent); border:2px solid #fff; cursor:pointer;
+    }
+
+    /* ── PLOTS ── */
+    .plots-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    @media(max-width:640px){ .plots-grid { grid-template-columns:1fr; } }
+    .plot-card { padding:16px 18px; }
+    canvas { display:block; width:100%; border-radius:8px; }
+    #c-zplane { height:320px; }
+    #c-freqresp { height:320px; }
+
+    /* Legend */
+    .legend { display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; }
+    .leg { display:flex; align-items:center; gap:6px; font-size:.73rem; font-weight:600; color:var(--mid); }
+    .leg-dot { width:11px; height:11px; border-radius:50%; border:2px solid; }
+    .leg-line { width:16px; height:3px; border-radius:2px; }
+
+    /* ── CONCEPT ── */
+    .concept { background:linear-gradient(135deg,var(--accent-light),#f0faf9); border:1px solid #b2dfdb; border-radius:12px; padding:18px 22px; }
+    .concept h3 { font-family:'Space Grotesk',sans-serif; font-size:.88rem; font-weight:700; color:var(--accent-dark); margin-bottom:10px; }
+    .concept ul { list-style:none; display:flex; flex-direction:column; gap:7px; }
+    .concept li { font-size:.82rem; color:var(--mid); padding-left:14px; position:relative; line-height:1.55; }
+    .concept li::before { content:'›'; position:absolute; left:0; color:var(--accent); font-weight:700; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="index.html">epsiCTRON</a>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="resume.html">Resume</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="badge">03 · Z-Plane</div>
+    <h1>Pole-Zero Visualiser &amp; Frequency Response</h1>
+    <p>Place a conjugate zero pair on (or near) the unit circle and instantly see the notch it carves into the magnitude frequency response.</p>
+  </div>
+</section>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- Info pills -->
+  <div class="card">
+    <div class="card-title">Filter Properties</div>
+    <div class="pills">
+      <div class="pill"><div class="lbl">Zero Location z</div><div class="val" id="info-z">j</div></div>
+      <div class="pill"><div class="lbl">Zero Angle θ</div><div class="val" id="info-theta">π/2</div></div>
+      <div class="pill"><div class="lbl">Zero Radius r</div><div class="val" id="info-r">1.00</div></div>
+      <div class="pill"><div class="lbl">Notch Frequency</div><div class="val" id="info-notch">0.25 · fₛ/2</div></div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="card">
+    <div class="card-title">Zero Parameters</div>
+    <div class="ctrl-grid">
+
+      <div class="ctrl-item">
+        <label>Zero Angle θ (rad) <span class="vbadge" id="lbl-theta">π/2</span></label>
+        <input type="range" id="sl-theta" min="0.02" max="3.12" value="1.5708" step="0.01">
+        <div class="ctrl-sub">Angle of zero on the unit circle (0 → π)</div>
+      </div>
+
+      <div class="ctrl-item">
+        <label>Zero Radius r <span class="vbadge" id="lbl-r">1.00</span></label>
+        <input type="range" id="sl-r" min="0.1" max="1.0" value="1.0" step="0.01">
+        <div class="ctrl-sub">Move zero off the unit circle — the notch becomes shallower</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Plots -->
+  <div class="plots-grid">
+
+    <div class="card plot-card">
+      <div class="card-title">Z-Plane</div>
+      <canvas id="c-zplane"></canvas>
+      <div class="legend">
+        <div class="leg">
+          <div class="leg-dot" style="background:#f97316;border-color:#f97316;"></div>Zero z, z*
+        </div>
+        <div class="leg">
+          <div class="leg-line" style="background:#94a3b8"></div>Unit Circle
+        </div>
+      </div>
+    </div>
+
+    <div class="card plot-card">
+      <div class="card-title">Magnitude Frequency Response |H(e<sup>jω</sup>)|</div>
+      <canvas id="c-freqresp"></canvas>
+      <div class="legend">
+        <div class="leg"><div class="leg-line" style="background:#00897b"></div>|H(e<sup>jω</sup>)|</div>
+        <div class="leg" id="leg-notch" style="align-items:center;">
+          <div style="width:1px;height:14px;background:#ef4444;border-radius:1px;"></div>
+          <span>Notch</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Key Concepts -->
+  <div class="concept">
+    <h3>Key Concepts</h3>
+    <ul>
+      <li><strong>Zeros</strong> — a zero at z = re<sup>jθ</sup> forces H(z) = 0 at that point. When evaluated on the unit circle (z = e<sup>jω</sup>), the frequency ω = θ gets completely cancelled, creating a null.</li>
+      <li><strong>Conjugate Pairs</strong> — real-coefficient filters must have zeros in conjugate pairs: z and z*. Both zeros together give H(z) = (z − re<sup>jθ</sup>)(z − re<sup>−jθ</sup>) = z² − 2r·cos(θ)·z + r².</li>
+      <li><strong>Unit Circle &amp; Perfect Nulls</strong> — a zero exactly on the unit circle (r = 1) creates a perfect null (−∞ dB) because the distance from the evaluation point e<sup>jθ</sup> to the zero is exactly zero. Moving the zero inside/outside (r &lt; 1) makes the notch finite.</li>
+      <li><strong>Try this:</strong> Drag θ across the range and watch the notch sweep through the spectrum. Then reduce r to 0.7 and see the null become a dip instead of a perfect zero.</li>
+    </ul>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+// ═══════════════════════════════════════════════════
+//  Z-Plane canvas renderer
+// ═══════════════════════════════════════════════════
+function drawZPlane(canvas, theta, r) {
+  const dpr = window.devicePixelRatio || 1;
+  const cw  = canvas.clientWidth;
+  const ch  = canvas.clientHeight;
+  if (canvas.width  !== Math.round(cw * dpr) ||
+      canvas.height !== Math.round(ch * dpr)) {
+    canvas.width  = Math.round(cw * dpr);
+    canvas.height = Math.round(ch * dpr);
+  }
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const p  = v => v * dpr;
+  const W  = canvas.width;
+  const H  = canvas.height;
+
+  // Margins
+  const ML = p(42), MR = p(16), MT = p(16), MB = p(42);
+  const PW = W - ML - MR;
+  const PH = H - MT - MB;
+
+  // Range: -1.4 to 1.4
+  const range = 1.4;
+  const cx = ML + PW / 2;
+  const cy = MT + PH / 2;
+  const scale = Math.min(PW, PH) / (2 * range);
+
+  const tx = x => cx + x * scale;
+  const ty = y => cy - y * scale;
+
+  // Background
+  ctx.fillStyle = '#f8fafc';
+  ctx.fillRect(ML, MT, PW, PH);
+
+  // Border
+  ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = p(1);
+  ctx.strokeRect(ML, MT, PW, PH);
+
+  // Clip
+  ctx.save();
+  ctx.beginPath(); ctx.rect(ML, MT, PW, PH); ctx.clip();
+
+  // Grid lines
+  ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = p(0.75); ctx.setLineDash([p(3), p(4)]);
+  for (let v = -1; v <= 1; v += 0.5) {
+    const px = tx(v); const py = ty(v);
+    ctx.beginPath(); ctx.moveTo(px, MT); ctx.lineTo(px, MT + PH); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(ML, py); ctx.lineTo(ML + PW, py); ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  // Axes
+  ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = p(1);
+  ctx.beginPath(); ctx.moveTo(tx(-range), ty(0)); ctx.lineTo(tx(range), ty(0)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(tx(0), ty(-range)); ctx.lineTo(tx(0), ty(range)); ctx.stroke();
+
+  // Unit circle
+  ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = p(1.5);
+  ctx.beginPath();
+  ctx.arc(tx(0), ty(0), 1 * scale, 0, 2 * Math.PI);
+  ctx.stroke();
+
+  // Dashed radius lines to zeros
+  const zx =  r * Math.cos(theta);
+  const zy =  r * Math.sin(theta);
+  const zxc = r * Math.cos(-theta);
+  const zyc = r * Math.sin(-theta);
+
+  ctx.strokeStyle = '#f97316'; ctx.lineWidth = p(1); ctx.setLineDash([p(3), p(4)]);
+  ctx.beginPath(); ctx.moveTo(tx(0), ty(0)); ctx.lineTo(tx(zx), ty(zy)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(tx(0), ty(0)); ctx.lineTo(tx(zxc), ty(zyc)); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Arc showing angle θ
+  if (r > 0.05) {
+    ctx.strokeStyle = 'rgba(249,115,22,0.4)'; ctx.lineWidth = p(1);
+    ctx.beginPath();
+    ctx.arc(tx(0), ty(0), 0.22 * scale, -theta, 0, false);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(tx(0), ty(0), 0.22 * scale, 0, theta, false);
+    ctx.stroke();
+  }
+
+  // Draw zeros as circles
+  const drawZero = (wx, wy) => {
+    ctx.fillStyle   = '#fff7ed';
+    ctx.strokeStyle = '#f97316';
+    ctx.lineWidth   = p(2.2);
+    ctx.beginPath();
+    ctx.arc(tx(wx), ty(wy), p(7), 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.stroke();
+  };
+
+  drawZero(zx, zy);
+  drawZero(zxc, zyc);
+
+  // Labels for zeros
+  ctx.fillStyle = '#f97316';
+  ctx.font = `bold ${p(10)}px Inter,system-ui,sans-serif`;
+  ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+  ctx.fillText('z', tx(zx) + p(9), ty(zy));
+  ctx.textBaseline = 'top';
+  ctx.fillText('z*', tx(zxc) + p(9), ty(zyc));
+
+  ctx.restore();
+
+  // Axis tick labels
+  ctx.fillStyle   = '#94a3b8';
+  ctx.font        = `${p(9.5)}px Inter,system-ui,sans-serif`;
+  ctx.textAlign   = 'center'; ctx.textBaseline = 'top';
+  [-1, -0.5, 0, 0.5, 1].forEach(v => {
+    ctx.fillText(v.toFixed(1), tx(v), MT + PH + p(4));
+  });
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  [-1, -0.5, 0.5, 1].forEach(v => {
+    ctx.fillText(v.toFixed(1), ML - p(4), ty(v));
+  });
+
+  // Axis labels
+  ctx.fillStyle    = '#64748b';
+  ctx.font         = `${p(10.5)}px Inter,system-ui,sans-serif`;
+  ctx.textBaseline = 'bottom'; ctx.textAlign = 'center';
+  ctx.fillText('Re(z)', ML + PW / 2, H - p(2));
+  ctx.save();
+  ctx.translate(p(13), MT + PH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.textBaseline = 'top';
+  ctx.fillText('Im(z)', 0, 0);
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════
+//  Frequency response renderer
+// ═══════════════════════════════════════════════════
+function computeFreqResp(theta, r, nOmega) {
+  // H(e^{jw}) = (e^{jw} - r*e^{jTheta}) * (e^{jw} - r*e^{-jTheta})
+  const pts = [];
+  for (let k = 0; k < nOmega; k++) {
+    const omega = (k / (nOmega - 1)) * Math.PI;
+    // e^{jw} - z = (cos(w)-r*cos(t)) + j*(sin(w)-r*sin(t))
+    const ar = Math.cos(omega) - r * Math.cos(theta);
+    const ai = Math.sin(omega) - r * Math.sin(theta);
+    // e^{jw} - z* = (cos(w)-r*cos(t)) - j*(sin(w)-r*sin(t))   ... note z*=re^{-jt}
+    const br = Math.cos(omega) - r * Math.cos(-theta);
+    const bi = Math.sin(omega) - r * Math.sin(-theta);
+    // |H| = |a| * |b|
+    const mag = Math.sqrt(ar*ar + ai*ai) * Math.sqrt(br*br + bi*bi);
+    pts.push({ x: omega / Math.PI, y: mag });
+  }
+  return pts;
+}
+
+function drawFreqResp(canvas, theta, r) {
+  const dpr = window.devicePixelRatio || 1;
+  const cw  = canvas.clientWidth;
+  const ch  = canvas.clientHeight;
+  if (canvas.width  !== Math.round(cw * dpr) ||
+      canvas.height !== Math.round(ch * dpr)) {
+    canvas.width  = Math.round(cw * dpr);
+    canvas.height = Math.round(ch * dpr);
+  }
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const p  = v => v * dpr;
+  const ML = p(52), MR = p(16), MT = p(12), MB = p(42);
+  const PW = canvas.width  - ML - MR;
+  const PH = canvas.height - MT - MB;
+
+  const xMin = 0, xMax = 1;
+  const yMin = 0, yMax = 4;
+
+  const mx = x => ML + (x - xMin) / (xMax - xMin) * PW;
+  const my = y => MT + (1 - (y - yMin) / (yMax - yMin)) * PH;
+
+  // Background
+  ctx.fillStyle = '#f8fafc';
+  ctx.fillRect(ML, MT, PW, PH);
+
+  ctx.font        = `${p(10)}px Inter,system-ui,sans-serif`;
+  ctx.fillStyle   = '#94a3b8';
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth   = p(0.75);
+
+  // Y grid
+  for (let y = 0; y <= yMax; y += 1) {
+    const py = my(y);
+    ctx.setLineDash([p(3), p(4)]);
+    ctx.beginPath(); ctx.moveTo(ML, py); ctx.lineTo(ML + PW, py); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    ctx.fillText(y.toFixed(0), ML - p(6), py);
+  }
+
+  // X grid / labels: 0, π/4, π/2, 3π/4, π
+  const xTicks = [0, 0.25, 0.5, 0.75, 1];
+  const xLabels = ['0', 'π/4', 'π/2', '3π/4', 'π'];
+  xTicks.forEach((xv, i) => {
+    const px = mx(xv);
+    ctx.setLineDash([p(3), p(4)]);
+    ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = p(0.75);
+    ctx.beginPath(); ctx.moveTo(px, MT); ctx.lineTo(px, MT + PH); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#94a3b8';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText(xLabels[i], px, MT + PH + p(5));
+  });
+
+  // Border
+  ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = p(1);
+  ctx.strokeRect(ML, MT, PW, PH);
+
+  // Clip
+  ctx.save();
+  ctx.beginPath(); ctx.rect(ML, MT, PW, PH); ctx.clip();
+
+  // Notch marker
+  const notchX = theta / Math.PI;
+  if (notchX >= 0 && notchX <= 1) {
+    const px = mx(notchX);
+    ctx.strokeStyle = 'rgba(239,68,68,0.45)'; ctx.lineWidth = p(1.2); ctx.setLineDash([p(4), p(4)]);
+    ctx.beginPath(); ctx.moveTo(px, MT); ctx.lineTo(px, MT + PH); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // Frequency response curve
+  const pts = computeFreqResp(theta, r, 512);
+  ctx.strokeStyle = '#00897b'; ctx.lineWidth = p(2); ctx.lineJoin = 'round';
+  ctx.beginPath();
+  pts.forEach((pt, i) => {
+    const px = mx(pt.x);
+    const py = my(Math.min(yMax + 1, Math.max(0, pt.y)));
+    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+  });
+  ctx.stroke();
+
+  // Fill under curve
+  const lastX = mx(pts[pts.length - 1].x);
+  const firstX = mx(pts[0].x);
+  const baseY = my(0);
+  ctx.lineTo(lastX, baseY);
+  ctx.lineTo(firstX, baseY);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(0,137,123,0.08)';
+  ctx.fill();
+
+  ctx.restore();
+
+  // Axis labels
+  ctx.fillStyle    = '#64748b';
+  ctx.font         = `${p(10.5)}px Inter,system-ui,sans-serif`;
+  ctx.textBaseline = 'bottom'; ctx.textAlign = 'center';
+  ctx.fillText('Normalised Frequency ω/π', ML + PW / 2, canvas.height - p(2));
+
+  ctx.save();
+  ctx.translate(p(13), MT + PH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.textBaseline = 'top';
+  ctx.fillText('|H(eʲω)|', 0, 0);
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════
+//  Render
+// ═══════════════════════════════════════════════════
+const cvZplane  = document.getElementById('c-zplane');
+const cvFreqR   = document.getElementById('c-freqresp');
+
+function render() {
+  const theta = +document.getElementById('sl-theta').value;
+  const r     = +document.getElementById('sl-r').value;
+
+  // Labels
+  const thetaFrac = theta / Math.PI;
+  document.getElementById('lbl-theta').textContent = thetaFrac.toFixed(2) + 'π';
+  document.getElementById('lbl-r').textContent     = r.toFixed(2);
+
+  // Info pills
+  const zRe = r * Math.cos(theta);
+  const zIm = r * Math.sin(theta);
+  const reStr = zRe.toFixed(2);
+  const imStr = zIm >= 0 ? '+' + zIm.toFixed(2) + 'j' : zIm.toFixed(2) + 'j';
+  document.getElementById('info-z').textContent     = reStr + imStr;
+  document.getElementById('info-theta').textContent = thetaFrac.toFixed(3) + 'π';
+  document.getElementById('info-r').textContent     = r.toFixed(2);
+  document.getElementById('info-notch').textContent = thetaFrac.toFixed(3) + ' · fₛ/2';
+
+  drawZPlane(cvZplane, theta, r);
+  drawFreqResp(cvFreqR, theta, r);
+}
+
+// ═══════════════════════════════════════════════════
+//  Events
+// ═══════════════════════════════════════════════════
+document.getElementById('sl-theta').addEventListener('input', render);
+document.getElementById('sl-r').addEventListener('input', render);
+window.addEventListener('resize', render);
+document.fonts.ready.then(render);
+</script>
+</body>
+</html>
