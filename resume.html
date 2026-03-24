@@ -3,162 +3,581 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
   <title>Kishor KS – Resume</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body { background: #f5f5f5; }
-    .resume-card { max-width: 860px; margin: 32px auto; background: #fff; padding: 40px 48px; box-shadow: 0 2px 8px rgba(0,0,0,0.10); }
-    h1.name { font-size: 2rem; font-weight: 700; margin: 0 0 4px; }
-    .contact { color: #555; font-size: 0.95rem; margin-bottom: 24px; }
-    .contact a { color: #00695c; }
-    .section-title {
-      background: #b2dfdb;
-      color: #004d40;
-      font-weight: 700;
-      font-size: 0.85rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      padding: 4px 10px;
-      margin: 28px 0 12px;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent: #00897b;
+      --accent-dark: #004d40;
+      --accent-light: #e0f2f1;
+      --dark: #0f172a;
+      --mid: #334155;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --bg: #f8fafc;
+      --white: #ffffff;
     }
-    .edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    ul.plain { list-style: disc; padding-left: 20px; margin: 0; }
-    ul.plain li { margin-bottom: 6px; font-size: 0.95rem; }
-    .exp-item { margin-bottom: 8px; font-size: 0.95rem; }
-    .project-title { font-weight: 700; font-size: 0.97rem; margin: 14px 0 4px; }
-    .project-meta { color: #555; font-size: 0.88rem; margin-bottom: 4px; }
-    ul.sub { list-style: circle; padding-left: 22px; margin: 4px 0; font-size: 0.9rem; color: #333; }
-    ul.sub li { margin-bottom: 3px; }
-    @media (max-width: 600px) {
-      .resume-card { padding: 24px 16px; }
-      .edu-grid { grid-template-columns: 1fr; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--accent-dark);
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    nav .logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+    nav ul { list-style: none; display: flex; gap: 28px; }
+    nav ul a {
+      color: rgba(255,255,255,.8);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color .2s;
+    }
+    nav ul a:hover, nav ul a.active { color: #fff; }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--accent-dark) 0%, #00695c 60%, #00897b 100%);
+      padding: 64px 5% 56px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      right: -80px; top: -80px;
+      width: 380px; height: 380px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.05);
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      right: 80px; bottom: -120px;
+      width: 260px; height: 260px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.04);
+    }
+    .hero-inner { max-width: 900px; margin: auto; position: relative; z-index: 1; }
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -.5px;
+      line-height: 1.1;
+    }
+    .hero .subtitle {
+      font-size: 1.05rem;
+      font-weight: 400;
+      opacity: .85;
+      margin: 10px 0 24px;
+      letter-spacing: .3px;
+    }
+    .hero-contacts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .contact-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 0.83rem;
+      color: #fff;
+      text-decoration: none;
+      backdrop-filter: blur(4px);
+      transition: background .2s;
+    }
+    .contact-chip:hover { background: rgba(255,255,255,.22); }
+    .contact-chip i { font-size: 0.78rem; opacity: .85; }
+
+    /* ── MAIN LAYOUT ── */
+    .page { max-width: 1060px; margin: 0 auto; padding: 44px 5% 80px; }
+    .grid { display: grid; grid-template-columns: 300px 1fr; gap: 32px; align-items: start; }
+
+    /* ── SIDEBAR ── */
+    .sidebar { display: flex; flex-direction: column; gap: 24px; }
+    .card {
+      background: var(--white);
+      border-radius: 14px;
+      padding: 24px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    }
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--accent-light);
+    }
+
+    /* Skills */
+    .skill-group { margin-bottom: 14px; }
+    .skill-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--mid);
+      margin-bottom: 7px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      background: var(--accent-light);
+      color: var(--accent-dark);
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 100px;
+      border: 1px solid #b2dfdb;
+    }
+
+    /* Education cards */
+    .edu-item { margin-bottom: 18px; }
+    .edu-item:last-child { margin-bottom: 0; }
+    .edu-degree { font-weight: 700; font-size: 0.9rem; color: var(--dark); }
+    .edu-inst {
+      font-size: 0.82rem;
+      color: var(--accent-dark);
+      font-weight: 500;
+      margin: 2px 0;
+    }
+    .edu-sub { font-size: 0.8rem; color: var(--muted); }
+    .cgpa-badge {
+      display: inline-block;
+      background: var(--accent-light);
+      color: var(--accent-dark);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 100px;
+      margin-top: 5px;
+    }
+
+    /* Interest pills */
+    .interest-tags { display: flex; flex-wrap: wrap; gap: 7px; }
+    .int-tag {
+      background: var(--dark);
+      color: #fff;
+      font-size: 0.78rem;
+      padding: 5px 12px;
+      border-radius: 100px;
+      font-weight: 500;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main { display: flex; flex-direction: column; gap: 24px; }
+
+    /* Section header */
+    .section-hd {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-hd i { font-size: 0.85rem; }
+    .section-hd::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* Timeline */
+    .timeline { position: relative; padding-left: 24px; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 6px; top: 8px; bottom: 8px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--accent), var(--accent-light));
+      border-radius: 2px;
+    }
+    .tl-item { position: relative; margin-bottom: 28px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot {
+      position: absolute;
+      left: -21px; top: 5px;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--white);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+    .tl-title {
+      font-weight: 700;
+      font-size: 0.97rem;
+      color: var(--dark);
+    }
+    .tl-company {
+      font-size: 0.85rem;
+      color: var(--accent-dark);
+      font-weight: 600;
+      margin: 1px 0;
+    }
+    .tl-date {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 100px;
+      margin: 4px 0 0;
+    }
+
+    /* Projects */
+    .proj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .proj-card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,.05);
+      transition: box-shadow .2s, transform .2s;
+    }
+    .proj-card:hover {
+      box-shadow: 0 6px 20px rgba(0,137,123,.12);
+      transform: translateY(-2px);
+    }
+    .proj-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 0.93rem;
+      color: var(--dark);
+      margin-bottom: 4px;
+    }
+    .proj-org {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 2px 8px;
+      border-radius: 100px;
+      margin-bottom: 10px;
+    }
+    .proj-card ul {
+      list-style: none;
+      padding: 0;
+    }
+    .proj-card ul li {
+      font-size: 0.82rem;
+      color: var(--mid);
+      padding: 3px 0 3px 14px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .proj-card ul li::before {
+      content: '›';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Publication */
+    .pub-card {
+      background: linear-gradient(135deg, var(--accent-light) 0%, #f0faf9 100%);
+      border-radius: 12px;
+      padding: 20px 22px;
+      border: 1px solid #b2dfdb;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .pub-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .pub-text { font-size: 0.88rem; color: var(--mid); line-height: 1.55; }
+    .pub-text strong { color: var(--dark); }
+    .pub-venue {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: var(--accent);
+      color: #fff;
+      padding: 2px 10px;
+      border-radius: 100px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: 1fr; }
+      .proj-grid { grid-template-columns: 1fr; }
+      nav ul { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <nav class="nav-wrapper teal darken-4">
-      <div class="container">
-        <a href="index.html" class="brand-logo">epsiCTRON</a>
-        <a href="#" class="sidenav-trigger" data-target="mobile-menu">
-          <i class="material-icons">menu</i>
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="logo">epsiCTRON</a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="resume.html" class="active">Resume</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <h1>Kishor KS</h1>
+      <p class="subtitle">Senior ML / DSP Engineer &nbsp;·&nbsp; Speech &nbsp;·&nbsp; Radar &nbsp;·&nbsp; Signal Processing</p>
+      <div class="hero-contacts">
+        <a class="contact-chip" href="mailto:kishor13252@gmail.com">
+          <i class="fas fa-envelope"></i> kishor13252@gmail.com
         </a>
-        <ul class="right hide-on-med-and-down">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="resume.html">Resume</a></li>
-        </ul>
-        <ul class="sidenav grey lighten-2" id="mobile-menu">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="resume.html">Resume</a></li>
-        </ul>
-      </div>
-    </nav>
-  </header>
-
-  <div class="resume-card">
-
-    <h1 class="name">Kishor KS</h1>
-    <div class="contact">
-      Vanasree Nilaya, 2nd cross, Srishyla Badavane, Bank colony, Chitradurga (K.A., INDIA) – 577501<br>
-      <i class="fas fa-envelope fa-xs"></i> <a href="mailto:kishor13252@gmail.com">kishor13252@gmail.com</a>
-      &nbsp;|&nbsp;
-      <i class="fas fa-phone fa-xs"></i> 8884372362
-      &nbsp;|&nbsp;
-      <i class="fas fa-globe fa-xs"></i> <a href="https://epsictron.github.io" target="_blank">epsictron.github.io</a>
-    </div>
-
-    <!-- Academic Details -->
-    <div class="section-title">Academic Details</div>
-    <div class="edu-grid">
-      <div>
-        <strong>Master of Technology</strong><br>
-        Indian Institute of Technology, Hyderabad<br>
-        Communication and Signal Processing, 2017<br>
-        CGPA: 9.07 / 10
-      </div>
-      <div>
-        <strong>Bachelor of Engineering</strong><br>
-        Siddaganga Institute of Technology, Tumakuru<br>
-        Electronics and Communication, 2013<br>
-        CGPA: 9.21 / 10
+        <span class="contact-chip">
+          <i class="fas fa-phone"></i> 8884372362
+        </span>
+        <a class="contact-chip" href="https://epsictron.github.io" target="_blank">
+          <i class="fas fa-globe"></i> epsictron.github.io
+        </a>
+        <span class="contact-chip">
+          <i class="fas fa-map-marker-alt"></i> Chitradurga, Karnataka, India
+        </span>
       </div>
     </div>
+  </section>
 
-    <!-- Fields of Interest -->
-    <div class="section-title">Fields of Interest</div>
-    <ul class="plain">
-      <li>Machine / Deep Learning, Speech / Radar Signal Processing</li>
-    </ul>
+  <!-- PAGE -->
+  <div class="page">
+    <div class="grid">
 
-    <!-- Industry Experience -->
-    <div class="section-title">Industry Experience &nbsp;<span style="font-weight:400;font-size:0.85rem;">[6 Years]</span></div>
-    <div class="exp-item"><strong>Senior Software Engineer</strong> – Nvidia, Pune &nbsp;<em>Apr 2022 – Feb 2024</em></div>
-    <div class="exp-item"><strong>R&amp;D Engineer</strong> – Honeywell, Bengaluru &nbsp;<em>Sep 2019 – Jan 2022</em></div>
-    <div class="exp-item"><strong>Software Engineer</strong> – PathPartner Technologies, Bengaluru &nbsp;<em>Jun 2018 – Sep 2019</em></div>
-    <div class="exp-item"><strong>Audio DSP Engineer</strong> – Meeami Technologies, Hyderabad &nbsp;<em>Jul 2017 – Jun 2018</em></div>
+      <!-- ── SIDEBAR ── -->
+      <aside class="sidebar">
 
-    <!-- Publications -->
-    <div class="section-title">Publications</div>
-    <ul class="plain">
-      <li>D. V. L. N Dheeraj, <strong>K. S. Kishor</strong>, K. Sri Rama Murty, "Speech Source Separation using ICA in Constant Q Transform Domain." – <em>INTERSPEECH 2018</em></li>
-    </ul>
+        <!-- Education -->
+        <div class="card">
+          <div class="card-title"><i class="fas fa-graduation-cap"></i> Education</div>
+          <div class="edu-item">
+            <div class="edu-degree">M.Tech</div>
+            <div class="edu-inst">IIT Hyderabad</div>
+            <div class="edu-sub">Communication &amp; Signal Processing</div>
+            <div class="edu-sub">2017</div>
+            <span class="cgpa-badge">CGPA 9.07 / 10</span>
+          </div>
+          <div class="edu-item">
+            <div class="edu-degree">B.E.</div>
+            <div class="edu-inst">Siddaganga Institute of Technology, Tumakuru</div>
+            <div class="edu-sub">Electronics &amp; Communication</div>
+            <div class="edu-sub">2013</div>
+            <span class="cgpa-badge">CGPA 9.21 / 10</span>
+          </div>
+        </div>
 
-    <!-- Technical Skills -->
-    <div class="section-title">Technical Skills</div>
-    <ul class="plain">
-      <li>Python, C, PyTorch</li>
-    </ul>
+        <!-- Technical Skills -->
+        <div class="card">
+          <div class="card-title"><i class="fas fa-code"></i> Technical Skills</div>
+          <div class="skill-group">
+            <div class="skill-label">Languages</div>
+            <div class="skill-tags">
+              <span class="tag">Python</span>
+              <span class="tag">C</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <div class="skill-label">Frameworks</div>
+            <div class="skill-tags">
+              <span class="tag">PyTorch</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <div class="skill-label">Domains</div>
+            <div class="skill-tags">
+              <span class="tag">ML / DL</span>
+              <span class="tag">DSP</span>
+              <span class="tag">Speech</span>
+              <span class="tag">FMCW Radar</span>
+              <span class="tag">Adaptive Filters</span>
+            </div>
+          </div>
+        </div>
 
-    <!-- Course Work -->
-    <div class="section-title">Course Work</div>
-    <ul class="plain">
-      <li>Machine / Deep Learning, Speech / Adaptive / Digital Signal Processing</li>
-    </ul>
+        <!-- Interests -->
+        <div class="card">
+          <div class="card-title"><i class="fas fa-brain"></i> Interests</div>
+          <div class="interest-tags">
+            <span class="int-tag">Machine Learning</span>
+            <span class="int-tag">Deep Learning</span>
+            <span class="int-tag">Speech Processing</span>
+            <span class="int-tag">Radar Signal Processing</span>
+          </div>
+        </div>
 
-    <!-- Projects -->
-    <div class="section-title">Projects</div>
+        <!-- Coursework -->
+        <div class="card">
+          <div class="card-title"><i class="fas fa-book-open"></i> Coursework</div>
+          <div class="skill-tags">
+            <span class="tag">Machine Learning</span>
+            <span class="tag">Deep Learning</span>
+            <span class="tag">Speech Processing</span>
+            <span class="tag">Adaptive SP</span>
+            <span class="tag">Digital SP</span>
+          </div>
+        </div>
 
-    <div class="project-title">Zero Shot [Any to Any] Voice Conversion</div>
-    <div class="project-meta">NVIDIA</div>
-    <ul class="sub">
-      <li>Transformation of source voice to target voice while keeping text and prosody intact.</li>
-      <li>Models: Linguistic encoder (Conformer), Pitch encoder (CNN), Speaker encoder (TitaNet), Decoder (HiFi-GAN)</li>
-      <li>Evaluation: WER/CER, PCC, Cosine similarity, Synthesized speech quality</li>
-    </ul>
+      </aside>
 
-    <div class="project-title">Single Channel Speech Enhancement</div>
-    <div class="project-meta">IITH &amp; Meeami Technologies</div>
-    <ul class="sub">
-      <li>Single/Multi channel speech enhancement using statistical signal processing and data-driven (sequence model) approaches.</li>
-      <li>Phase-aware Linear/Sequence models (LSTM), Independent Component Analysis (ICA)</li>
-    </ul>
+      <!-- ── MAIN ── -->
+      <main class="main">
 
-    <div class="project-title">Visual Docking Guidance System</div>
-    <div class="project-meta">Honeywell</div>
-    <ul class="sub">
-      <li>Multi-sensor (Cascaded TI FMCW Radar + Camera + Lidar) system to guide aircraft to docking gate. Developed full radar pipeline.</li>
-      <li>MIMO, Tx Beam-forming, Chirp config, Radar calibration, Range/Doppler FFT, DOA (FFT/MUSIC), CFAR (1D/2D), DBSCAN clustering</li>
-    </ul>
+        <!-- Experience -->
+        <div class="card">
+          <div class="section-hd"><i class="fas fa-briefcase"></i> Industry Experience <span style="color:var(--muted);font-weight:400;font-size:.9em;">6 Years</span></div>
+          <div class="timeline">
+            <div class="tl-item">
+              <div class="tl-dot"></div>
+              <div class="tl-title">Senior Software Engineer</div>
+              <div class="tl-company">Nvidia &nbsp;·&nbsp; Pune</div>
+              <div class="tl-date"><i class="fas fa-calendar-alt"></i> Apr 2022 – Feb 2024</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot"></div>
+              <div class="tl-title">R&amp;D Engineer</div>
+              <div class="tl-company">Honeywell &nbsp;·&nbsp; Bengaluru</div>
+              <div class="tl-date"><i class="fas fa-calendar-alt"></i> Sep 2019 – Jan 2022</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot"></div>
+              <div class="tl-title">Software Engineer</div>
+              <div class="tl-company">PathPartner Technologies &nbsp;·&nbsp; Bengaluru</div>
+              <div class="tl-date"><i class="fas fa-calendar-alt"></i> Jun 2018 – Sep 2019</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot"></div>
+              <div class="tl-title">Audio DSP Engineer</div>
+              <div class="tl-company">Meeami Technologies &nbsp;·&nbsp; Hyderabad</div>
+              <div class="tl-date"><i class="fas fa-calendar-alt"></i> Jul 2017 – Jun 2018</div>
+            </div>
+          </div>
+        </div>
 
-    <div class="project-title">In-Cabin Sensing using FMCW Radar</div>
-    <div class="project-meta">PathPartner Technologies</div>
-    <ul class="sub">
-      <li>AWR 1843 sensor for detecting life forms in pre-defined coverage zones.</li>
-      <li>Basic radar pipeline, Feature analysis, Binary Classifier</li>
-    </ul>
+        <!-- Projects -->
+        <div class="card">
+          <div class="section-hd"><i class="fas fa-layer-group"></i> Projects</div>
+          <div class="proj-grid">
 
+            <div class="proj-card">
+              <div class="proj-name">Zero Shot Voice Conversion</div>
+              <div class="proj-org"><i class="fas fa-building"></i> NVIDIA</div>
+              <ul>
+                <li>Any-to-any speaker voice transformation preserving text &amp; prosody</li>
+                <li>Conformer, CNN, TitaNet, HiFi-GAN models</li>
+                <li>Evaluated via WER/CER, PCC, Cosine Similarity</li>
+              </ul>
+            </div>
+
+            <div class="proj-card">
+              <div class="proj-name">Single Channel Speech Enhancement</div>
+              <div class="proj-org"><i class="fas fa-building"></i> IITH &amp; Meeami</div>
+              <ul>
+                <li>Multi-channel enhancement via stat. SP &amp; data-driven approaches</li>
+                <li>Phase-aware LSTM models, ICA in CQT domain</li>
+              </ul>
+            </div>
+
+            <div class="proj-card">
+              <div class="proj-name">Visual Docking Guidance System</div>
+              <div class="proj-org"><i class="fas fa-building"></i> Honeywell</div>
+              <ul>
+                <li>Multi-sensor (FMCW Radar + Camera + Lidar) aircraft docking guide</li>
+                <li>MIMO Beamforming, DOA (FFT/MUSIC), CFAR, DBSCAN clustering</li>
+              </ul>
+            </div>
+
+            <div class="proj-card">
+              <div class="proj-name">In-Cabin Sensing (FMCW Radar)</div>
+              <div class="proj-org"><i class="fas fa-building"></i> PathPartner</div>
+              <ul>
+                <li>AWR 1843 radar for detecting life forms in coverage zones</li>
+                <li>Radar pipeline, feature analysis, binary classifier</li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Publication -->
+        <div class="card">
+          <div class="section-hd"><i class="fas fa-newspaper"></i> Publication</div>
+          <div class="pub-card">
+            <div class="pub-icon"><i class="fas fa-file-alt"></i></div>
+            <div class="pub-text">
+              D. V. L. N Dheeraj, <strong>K. S. Kishor</strong>, K. Sri Rama Murty,
+              "Speech Source Separation using ICA in Constant Q Transform Domain."
+              <br>
+              <span class="pub-venue">INTERSPEECH 2018</span>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
   </div>
 
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
-  <script>
-    $(document).ready(function(){ $('.sidenav').sidenav(); });
-  </script>
 </body>
 </html>
