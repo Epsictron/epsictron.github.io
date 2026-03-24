@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+  <title>Kishor KS – Resume</title>
+  <style>
+    body { background: #f5f5f5; }
+    .resume-card { max-width: 860px; margin: 32px auto; background: #fff; padding: 40px 48px; box-shadow: 0 2px 8px rgba(0,0,0,0.10); }
+    h1.name { font-size: 2rem; font-weight: 700; margin: 0 0 4px; }
+    .contact { color: #555; font-size: 0.95rem; margin-bottom: 24px; }
+    .contact a { color: #00695c; }
+    .section-title {
+      background: #b2dfdb;
+      color: #004d40;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      margin: 28px 0 12px;
+    }
+    .edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    ul.plain { list-style: disc; padding-left: 20px; margin: 0; }
+    ul.plain li { margin-bottom: 6px; font-size: 0.95rem; }
+    .exp-item { margin-bottom: 8px; font-size: 0.95rem; }
+    .project-title { font-weight: 700; font-size: 0.97rem; margin: 14px 0 4px; }
+    .project-meta { color: #555; font-size: 0.88rem; margin-bottom: 4px; }
+    ul.sub { list-style: circle; padding-left: 22px; margin: 4px 0; font-size: 0.9rem; color: #333; }
+    ul.sub li { margin-bottom: 3px; }
+    @media (max-width: 600px) {
+      .resume-card { padding: 24px 16px; }
+      .edu-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav class="nav-wrapper teal darken-4">
+      <div class="container">
+        <a href="index.html" class="brand-logo">epsiCTRON</a>
+        <a href="#" class="sidenav-trigger" data-target="mobile-menu">
+          <i class="material-icons">menu</i>
+        </a>
+        <ul class="right hide-on-med-and-down">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="resume.html">Resume</a></li>
+        </ul>
+        <ul class="sidenav grey lighten-2" id="mobile-menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="resume.html">Resume</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <div class="resume-card">
+
+    <h1 class="name">Kishor KS</h1>
+    <div class="contact">
+      Vanasree Nilaya, 2nd cross, Srishyla Badavane, Bank colony, Chitradurga (K.A., INDIA) – 577501<br>
+      <i class="fas fa-envelope fa-xs"></i> <a href="mailto:kishor13252@gmail.com">kishor13252@gmail.com</a>
+      &nbsp;|&nbsp;
+      <i class="fas fa-phone fa-xs"></i> 8884372362
+      &nbsp;|&nbsp;
+      <i class="fas fa-globe fa-xs"></i> <a href="https://epsictron.github.io" target="_blank">epsictron.github.io</a>
+    </div>
+
+    <!-- Academic Details -->
+    <div class="section-title">Academic Details</div>
+    <div class="edu-grid">
+      <div>
+        <strong>Master of Technology</strong><br>
+        Indian Institute of Technology, Hyderabad<br>
+        Communication and Signal Processing, 2017<br>
+        CGPA: 9.07 / 10
+      </div>
+      <div>
+        <strong>Bachelor of Engineering</strong><br>
+        Siddaganga Institute of Technology, Tumakuru<br>
+        Electronics and Communication, 2013<br>
+        CGPA: 9.21 / 10
+      </div>
+    </div>
+
+    <!-- Fields of Interest -->
+    <div class="section-title">Fields of Interest</div>
+    <ul class="plain">
+      <li>Machine / Deep Learning, Speech / Radar Signal Processing</li>
+    </ul>
+
+    <!-- Industry Experience -->
+    <div class="section-title">Industry Experience &nbsp;<span style="font-weight:400;font-size:0.85rem;">[6 Years]</span></div>
+    <div class="exp-item"><strong>Senior Software Engineer</strong> – Nvidia, Pune &nbsp;<em>Apr 2022 – Feb 2024</em></div>
+    <div class="exp-item"><strong>R&amp;D Engineer</strong> – Honeywell, Bengaluru &nbsp;<em>Sep 2019 – Jan 2022</em></div>
+    <div class="exp-item"><strong>Software Engineer</strong> – PathPartner Technologies, Bengaluru &nbsp;<em>Jun 2018 – Sep 2019</em></div>
+    <div class="exp-item"><strong>Audio DSP Engineer</strong> – Meeami Technologies, Hyderabad &nbsp;<em>Jul 2017 – Jun 2018</em></div>
+
+    <!-- Publications -->
+    <div class="section-title">Publications</div>
+    <ul class="plain">
+      <li>D. V. L. N Dheeraj, <strong>K. S. Kishor</strong>, K. Sri Rama Murty, "Speech Source Separation using ICA in Constant Q Transform Domain." – <em>INTERSPEECH 2018</em></li>
+    </ul>
+
+    <!-- Technical Skills -->
+    <div class="section-title">Technical Skills</div>
+    <ul class="plain">
+      <li>Python, C, PyTorch</li>
+    </ul>
+
+    <!-- Course Work -->
+    <div class="section-title">Course Work</div>
+    <ul class="plain">
+      <li>Machine / Deep Learning, Speech / Adaptive / Digital Signal Processing</li>
+    </ul>
+
+    <!-- Projects -->
+    <div class="section-title">Projects</div>
+
+    <div class="project-title">Zero Shot [Any to Any] Voice Conversion</div>
+    <div class="project-meta">NVIDIA</div>
+    <ul class="sub">
+      <li>Transformation of source voice to target voice while keeping text and prosody intact.</li>
+      <li>Models: Linguistic encoder (Conformer), Pitch encoder (CNN), Speaker encoder (TitaNet), Decoder (HiFi-GAN)</li>
+      <li>Evaluation: WER/CER, PCC, Cosine similarity, Synthesized speech quality</li>
+    </ul>
+
+    <div class="project-title">Single Channel Speech Enhancement</div>
+    <div class="project-meta">IITH &amp; Meeami Technologies</div>
+    <ul class="sub">
+      <li>Single/Multi channel speech enhancement using statistical signal processing and data-driven (sequence model) approaches.</li>
+      <li>Phase-aware Linear/Sequence models (LSTM), Independent Component Analysis (ICA)</li>
+    </ul>
+
+    <div class="project-title">Visual Docking Guidance System</div>
+    <div class="project-meta">Honeywell</div>
+    <ul class="sub">
+      <li>Multi-sensor (Cascaded TI FMCW Radar + Camera + Lidar) system to guide aircraft to docking gate. Developed full radar pipeline.</li>
+      <li>MIMO, Tx Beam-forming, Chirp config, Radar calibration, Range/Doppler FFT, DOA (FFT/MUSIC), CFAR (1D/2D), DBSCAN clustering</li>
+    </ul>
+
+    <div class="project-title">In-Cabin Sensing using FMCW Radar</div>
+    <div class="project-meta">PathPartner Technologies</div>
+    <ul class="sub">
+      <li>AWR 1843 sensor for detecting life forms in pre-defined coverage zones.</li>
+      <li>Basic radar pipeline, Feature analysis, Binary Classifier</li>
+    </ul>
+
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+  <script>
+    $(document).ready(function(){ $('.sidenav').sidenav(); });
+  </script>
+</body>
+</html>
