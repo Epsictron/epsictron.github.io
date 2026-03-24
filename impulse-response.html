@@ -24,7 +24,18 @@
       --bg:     #f8fafc;
       --white:  #ffffff;
     }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); line-height: 1.6; }
+    [data-theme="dark"] {
+      --dark:   #e2e8f0;
+      --mid:    #cbd5e1;
+      --muted:  #94a3b8;
+      --border: #334155;
+      --bg:     #0f172a;
+      --white:  #1e293b;
+      --accent-light: #1a3a36;
+    }
+    [data-theme="dark"] .concept { background: linear-gradient(135deg, #1a3a36, #162a28); border-color: #2d5a52; }
+    [data-theme="dark"] .pill { background: #1a3a36; border-color: #2d5a52; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); line-height: 1.6; transition: background .3s, color .3s; }
 
     /* ── NAV ── */
     nav {
@@ -38,7 +49,44 @@
     nav ul { list-style:none; display:flex; gap:24px; }
     nav ul a { color:rgba(255,255,255,.8); text-decoration:none; font-size:.88rem; font-weight:500; transition:color .2s; }
     nav ul a:hover { color:#fff; }
-    @media(max-width:520px){ nav ul { display:none; } }
+
+    /* NAV RIGHT */
+    .nav-right { display:flex; align-items:center; gap:16px; }
+    .theme-btn {
+      background:none; border:none; color:rgba(255,255,255,.8); cursor:pointer;
+      font-size:1.1rem; padding:4px; transition:color .2s; line-height:1;
+    }
+    .theme-btn:hover { color:#fff; }
+    .hamburger {
+      display:none; background:none; border:none; cursor:pointer; padding:4px;
+      flex-direction:column; gap:4px;
+    }
+    .hamburger span {
+      display:block; width:20px; height:2px; background:#fff; border-radius:2px;
+      transition:transform .3s, opacity .3s;
+    }
+    .hamburger.active span:nth-child(1) { transform:rotate(45deg) translate(4px,4px); }
+    .hamburger.active span:nth-child(2) { opacity:0; }
+    .hamburger.active span:nth-child(3) { transform:rotate(-45deg) translate(4px,-4px); }
+    .btt {
+      position:fixed; bottom:24px; right:24px; width:40px; height:40px;
+      border-radius:50%; background:var(--accent-dark); color:#fff; border:none;
+      font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+      opacity:0; transform:translateY(10px); transition:opacity .3s, transform .3s;
+      box-shadow:0 2px 8px rgba(0,0,0,.2); z-index:99;
+    }
+    .btt.show { opacity:1; transform:translateY(0); }
+    .btt:hover { background:var(--accent); }
+
+    @media(max-width:520px){
+      nav ul {
+        display:none; position:absolute; top:56px; left:0; right:0;
+        background:var(--accent-dark); flex-direction:column; padding:12px 5% 16px; gap:12px;
+        box-shadow:0 4px 12px rgba(0,0,0,.3);
+      }
+      nav ul.open { display:flex; }
+      .hamburger { display:flex; }
+    }
 
     /* ── HERO ── */
     .hero {
@@ -129,11 +177,19 @@
 <!-- NAV -->
 <nav>
   <a class="logo" href="index.html">epsiCTRON</a>
-  <ul>
+  <ul id="nav-menu">
     <li><a href="index.html">Home</a></li>
     <li><a href="resume.html">Resume</a></li>
   </ul>
+  <div class="nav-right">
+    <button class="theme-btn" id="theme-toggle" aria-label="Toggle dark mode">&#9790;</button>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
 </nav>
+
+<button class="btt" id="btt" aria-label="Back to top">&#8593;</button>
 
 <!-- HERO -->
 <section class="hero">
@@ -424,6 +480,29 @@ const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.1 });
 document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Dark mode
+const themeBtn = document.getElementById('theme-toggle');
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  themeBtn.innerHTML = t === 'dark' ? '&#9788;' : '&#9790;';
+  localStorage.setItem('theme', t);
+}
+themeBtn.addEventListener('click', () => {
+  setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+if (localStorage.getItem('theme') === 'dark') setTheme('dark');
+
+const hamburger = document.getElementById('hamburger');
+const navMenu = document.getElementById('nav-menu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  navMenu.classList.toggle('open');
+});
+
+const btt = document.getElementById('btt');
+window.addEventListener('scroll', () => { btt.classList.toggle('show', window.scrollY > 300); });
+btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 </script>
 
 <footer>
