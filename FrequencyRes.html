@@ -314,7 +314,7 @@ function magnitudeDB(re, im, K) {
     const freq = k * fs / noDFT;
     const mag  = Math.sqrt(re[k] * re[k] + im[k] * im[k]);
     const db   = mag > 0 ? 20 * Math.log10(mag) : -120;
-    pts.push({ x: freq, y: Math.max(-80, db) });
+    pts.push({ x: freq, y: Math.max(-80, Math.min(40, db)) });
   }
   return pts;
 }
@@ -494,7 +494,7 @@ function render() {
     { pts: fPts2, xKey: 'x', yKey: 'y', color: C2 },
     { pts: fPts3, xKey: 'x', yKey: 'y', color: C3, lw: 2.2 },
   ], {
-    xMin: 0, xMax: fMax, yMin: -80, yMax: 10,
+    xMin: 0, xMax: fMax, yMin: -80, yMax: 40,
     xStep: 1, yStep: 20,
     xLabel: 'Frequency (Hz)', yLabel: 'Magnitude (dB)',
     xDec: 0, yDec: 0,
