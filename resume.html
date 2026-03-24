@@ -361,6 +361,27 @@
       border-radius: 100px;
     }
 
+    /* ── DEMO CARDS ── */
+    .demo-list { display:flex; flex-direction:column; gap:10px; }
+    .demo-card {
+      display:flex; align-items:center; gap:16px;
+      background:var(--bg); border:1px solid var(--border); border-radius:12px;
+      padding:14px 18px; text-decoration:none; color:inherit;
+      transition:all .2s;
+    }
+    .demo-card:hover { border-color:var(--accent); box-shadow:0 4px 14px rgba(0,137,123,.1); transform:translateY(-1px); }
+    .demo-num {
+      flex-shrink:0; width:36px; height:36px; border-radius:9px;
+      background:var(--accent-light); color:var(--accent-dark);
+      font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:.82rem;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .demo-body { flex:1; }
+    .demo-name { font-family:'Space Grotesk',sans-serif; font-size:.9rem; font-weight:700; color:var(--dark); margin-bottom:2px; }
+    .demo-desc { font-size:.78rem; color:var(--muted); line-height:1.5; }
+    .demo-arrow { color:var(--muted); font-size:1rem; transition:color .2s, transform .2s; }
+    .demo-card:hover .demo-arrow { color:var(--accent); transform:translateX(3px); }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .grid { grid-template-columns: 1fr; }
@@ -574,6 +595,38 @@
                 <span class="pub-venue"><i class="fas fa-external-link-alt" style="font-size:.7rem;margin-right:4px;"></i>INTERSPEECH 2018</span>
               </a>
             </div>
+          </div>
+        </div>
+
+        <!-- Interactive Demos -->
+        <div class="card">
+          <div class="section-hd"><i class="fas fa-chart-line"></i> Interactive DSP Demos</div>
+          <p style="font-size:.84rem;color:var(--mid);margin-bottom:16px;line-height:1.6;">Browser-based visualisations I built to share intuition behind signal processing concepts. Drag sliders, tweak parameters, and watch the maths come alive.</p>
+          <div class="demo-list">
+            <a href="FrequencyRes.html" class="demo-card">
+              <div class="demo-num">01</div>
+              <div class="demo-body">
+                <div class="demo-name">Frequency Resolution & Windowing</div>
+                <div class="demo-desc">See how observation length and window shape affect spectral leakage and frequency resolution.</div>
+              </div>
+              <span class="demo-arrow">&#8594;</span>
+            </a>
+            <a href="impulseRes.html" class="demo-card">
+              <div class="demo-num">02</div>
+              <div class="demo-body">
+                <div class="demo-name">Impulse Response & Convolution</div>
+                <div class="demo-desc">Watch how a first-order LTI system responds to rect and exponential inputs as duration approaches 0.</div>
+              </div>
+              <span class="demo-arrow">&#8594;</span>
+            </a>
+            <a href="polezero.html" class="demo-card">
+              <div class="demo-num">03</div>
+              <div class="demo-body">
+                <div class="demo-name">Pole-Zero Plot & Frequency Response</div>
+                <div class="demo-desc">Move zeros in the Z-plane and observe the resulting magnitude frequency response in real time.</div>
+              </div>
+              <span class="demo-arrow">&#8594;</span>
+            </a>
           </div>
         </div>
 
