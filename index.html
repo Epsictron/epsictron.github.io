@@ -1,60 +1,180 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <!-- font awesome -->
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
-  <!--Import Google Icon Font-->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <!-- Compiled and minified CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
-  <title>epsiCTRON</title>
+  <title>epsiCTRON – Kishor KS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent:       #00897b;
+      --accent-dark:  #004d40;
+      --accent-light: #e0f2f1;
+      --dark:   #0f172a;
+      --mid:    #334155;
+      --muted:  #64748b;
+      --border: #e2e8f0;
+      --bg:     #f8fafc;
+      --white:  #ffffff;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); line-height: 1.6; }
 
+    /* NAV */
+    nav {
+      background: var(--accent-dark);
+      padding: 0 5%;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px; position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    nav .logo { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.1rem; color:#fff; text-decoration:none; letter-spacing:1px; }
+    nav ul { list-style:none; display:flex; gap:24px; }
+    nav ul a { color:rgba(255,255,255,.8); text-decoration:none; font-size:.88rem; font-weight:500; transition:color .2s; }
+    nav ul a:hover, nav ul a.active { color:#fff; }
+    @media(max-width:520px){ nav ul { display:none; } }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, var(--accent-dark) 0%, #00695c 100%);
+      color:#fff; padding:56px 5% 48px; position:relative; overflow:hidden;
+    }
+    .hero::before { content:''; position:absolute; right:-40px; top:-60px; width:320px; height:320px; border-radius:50%; background:rgba(255,255,255,.04); }
+    .hero::after  { content:''; position:absolute; right:80px; bottom:-100px; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,.06); }
+    .hero-inner { max-width:760px; margin:auto; position:relative; z-index:1; }
+    .hero-tag { display:inline-block; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.25); border-radius:100px; padding:3px 14px; font-size:.7rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:16px; }
+    .hero h1 { font-family:'Space Grotesk',sans-serif; font-size:clamp(1.8rem,5vw,2.8rem); font-weight:700; line-height:1.15; margin-bottom:12px; }
+    .hero p { font-size:.95rem; opacity:.85; max-width:540px; margin-bottom:28px; }
+    .hero-links { display:flex; flex-wrap:wrap; gap:12px; }
+    .btn { display:inline-flex; align-items:center; gap:8px; padding:10px 20px; border-radius:8px; font-size:.85rem; font-weight:600; text-decoration:none; transition:all .2s; }
+    .btn-white { background:#fff; color:var(--accent-dark); }
+    .btn-white:hover { background:var(--accent-light); }
+    .btn-outline { background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,.5); }
+    .btn-outline:hover { background:rgba(255,255,255,.1); border-color:#fff; }
+
+    /* PAGE */
+    .page { max-width:900px; margin:0 auto; padding:40px 5% 64px; }
+
+    /* SECTION TITLE */
+    .section-title {
+      font-family:'Space Grotesk',sans-serif; font-size:.7rem; font-weight:700;
+      letter-spacing:1.8px; text-transform:uppercase; color:var(--accent);
+      margin-bottom:20px; display:flex; align-items:center; gap:10px;
+    }
+    .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+    /* DEMO CARDS */
+    .demos { display:flex; flex-direction:column; gap:12px; margin-bottom:48px; }
+    .demo-card {
+      display:flex; align-items:center; gap:20px;
+      background:var(--white); border:1px solid var(--border); border-radius:14px;
+      padding:18px 22px; text-decoration:none; color:inherit;
+      box-shadow:0 1px 3px rgba(0,0,0,.06); transition:all .2s;
+    }
+    .demo-card:hover { border-color:var(--accent); box-shadow:0 4px 16px rgba(0,137,123,.12); transform:translateY(-1px); }
+    .demo-num {
+      flex-shrink:0; width:40px; height:40px; border-radius:10px;
+      background:var(--accent-light); color:var(--accent-dark);
+      font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:.9rem;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .demo-info { flex:1; }
+    .demo-info h3 { font-family:'Space Grotesk',sans-serif; font-size:.98rem; font-weight:700; color:var(--dark); margin-bottom:2px; }
+    .demo-info p { font-size:.8rem; color:var(--muted); }
+    .demo-arrow { color:var(--muted); font-size:1.1rem; transition:color .2s, transform .2s; }
+    .demo-card:hover .demo-arrow { color:var(--accent); transform:translateX(3px); }
+
+    /* ABOUT STRIP */
+    .about-card {
+      background: linear-gradient(135deg, var(--accent-light) 0%, #f0faf9 100%);
+      border:1px solid #b2dfdb; border-radius:14px; padding:28px 28px;
+      display:flex; gap:24px; align-items:flex-start;
+    }
+    @media(max-width:540px){ .about-card { flex-direction:column; } }
+    .about-avatar {
+      flex-shrink:0; width:64px; height:64px; border-radius:50%;
+      background:var(--accent-dark); color:#fff;
+      font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.4rem;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .about-text h2 { font-family:'Space Grotesk',sans-serif; font-size:1.15rem; font-weight:700; color:var(--dark); margin-bottom:4px; }
+    .about-text .role { font-size:.82rem; color:var(--accent-dark); font-weight:600; margin-bottom:8px; }
+    .about-text p { font-size:.84rem; color:var(--mid); line-height:1.65; }
+    .about-links { margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; }
+    .chip { display:inline-flex; align-items:center; gap:5px; background:#fff; border:1px solid var(--border); border-radius:100px; padding:4px 12px; font-size:.75rem; font-weight:500; color:var(--mid); text-decoration:none; transition:all .2s; }
+    .chip:hover { border-color:var(--accent); color:var(--accent); }
+  </style>
 </head>
 <body>
 
-  <!-- navbar -->
-  <header>
-    <nav class="nav-wrapper teal darken-4">
-      <div class="container">
-        <a href="#" class="brand-logo">epsiCTRON</a>
-        <a href="#" class="sidenav-trigger" data-target="mobile-menu">
-          <i class="material-icons">menu</i>
-        </a>
-        <ul class="right hide-on-med-and-down">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="resume.html">Resume</a></li>
-        </ul>
-        <ul class="sidenav grey lighten-2" id="mobile-menu">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="resume.html">Resume</a></li>
-        </ul>
-      </div>
-    </nav>
-  </header>
+<nav>
+  <a class="logo" href="index.html">epsiCTRON</a>
+  <ul>
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="resume.html">Resume</a></li>
+  </ul>
+</nav>
 
-  <div class="container">
-    <h5 class = "center-align">Basics of Signal Processing</h5>
-    <div class="collection">
-      <a href="FrequencyRes.html" class="collection-item">01. Frequency Resolution and Windowing</a>
-      <a href="impulseRes.html" class="collection-item">02. Impulse response definition</a>
-      <a href="polezero.html" class="collection-item">03. Movement of Zero's in Z plane</a>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Signal Processing</div>
+    <h1>Interactive DSP<br>Visualisations</h1>
+    <p>Explore fundamental concepts in digital signal processing through interactive, browser-based visualisations. Drag sliders, change parameters, and build intuition.</p>
+    <div class="hero-links">
+      <a href="resume.html" class="btn btn-white">View Resume</a>
+      <a href="about.html" class="btn btn-outline">About Me</a>
+    </div>
+  </div>
+</section>
+
+<div class="page">
+
+  <div class="section-title">Demonstrations</div>
+
+  <div class="demos">
+    <a href="FrequencyRes.html" class="demo-card">
+      <div class="demo-num">01</div>
+      <div class="demo-info">
+        <h3>Frequency Resolution &amp; Windowing</h3>
+        <p>See how observation length and window shape affect spectral leakage and frequency resolution.</p>
+      </div>
+      <span class="demo-arrow">→</span>
+    </a>
+    <a href="impulseRes.html" class="demo-card">
+      <div class="demo-num">02</div>
+      <div class="demo-info">
+        <h3>Impulse Response &amp; Convolution</h3>
+        <p>Watch how a first-order LTI system responds to rect and exponential inputs as duration → 0.</p>
+      </div>
+      <span class="demo-arrow">→</span>
+    </a>
+    <a href="polezero.html" class="demo-card">
+      <div class="demo-num">03</div>
+      <div class="demo-info">
+        <h3>Pole-Zero Plot &amp; Frequency Response</h3>
+        <p>Move zeros in the Z-plane and observe the resulting magnitude frequency response in real time.</p>
+      </div>
+      <span class="demo-arrow">→</span>
+    </a>
+  </div>
+
+  <div class="section-title">About</div>
+
+  <div class="about-card">
+    <div class="about-avatar">KK</div>
+    <div class="about-text">
+      <h2>Kishor KS</h2>
+      <div class="role">Software Developer · Honeywell</div>
+      <p>Interested in Speech and Radar Signal Processing. These demos are personal explorations of DSP concepts — built to share the intuition behind the maths.</p>
+      <div class="about-links">
+        <a href="https://twitter.com/epsiCTRON" class="chip">Twitter / X</a>
+        <a href="resume.html" class="chip">Resume →</a>
+      </div>
     </div>
   </div>
 
+</div>
 
-  <!-- Compiled and minified JavaScript -->
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
-  <script>
-    $(document).ready(function(){
-
-      $('.sidenav').sidenav();
-
-    });
-  </script>
 </body>
 </html>
