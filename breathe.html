@@ -265,13 +265,20 @@
           </div>
 
           <div style={{
-            fontSize: 16, fontWeight: 300, letterSpacing: 3, marginBottom: 40, minHeight: 24,
-            fontFamily: "'DM Sans', sans-serif", textTransform: "uppercase", color: "rgba(210,180,130,0.6)",
+            textAlign: "center", marginBottom: 40, minHeight: 44,
+            fontFamily: "'DM Sans', sans-serif",
           }}>
-            {phase === PHASES.IDLE && "Ready"}
-            {phase === PHASES.INHALE_SLOW && "Inhale"}
-            {phase === PHASES.INHALE_BURST && "Inhale"}
-            {phase === PHASES.EXHALE && "Exhale"}
+            <div style={{ fontSize: 16, fontWeight: 300, letterSpacing: 3, textTransform: "uppercase", color: "rgba(210,180,130,0.6)" }}>
+              {phase === PHASES.IDLE && "Ready"}
+              {phase === PHASES.INHALE_SLOW && "Inhale"}
+              {phase === PHASES.INHALE_BURST && "Inhale"}
+              {phase === PHASES.EXHALE && "Exhale"}
+            </div>
+            <div style={{ fontSize: 11, fontWeight: 300, letterSpacing: 2, textTransform: "uppercase", color: "rgba(210,180,130,0.35)", marginTop: 6 }}>
+              {phase === PHASES.INHALE_SLOW && "slowly · through nose"}
+              {phase === PHASES.INHALE_BURST && "sharp burst · through nose"}
+              {phase === PHASES.EXHALE && "through mouth"}
+            </div>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 28, minHeight: 120 }}>
