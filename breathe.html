@@ -30,25 +30,25 @@
       padding: 0 5%;
       display: flex; align-items: center; justify-content: space-between;
       height: 48px;
-      background: rgba(10, 8, 5, 0.55);
+      background: rgba(4, 20, 16, 0.7);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
-      border-bottom: 1px solid rgba(200,165,100,0.08);
+      border-bottom: 1px solid rgba(0,137,123,0.15);
     }
     .nav-logo {
-      font-family: 'JetBrains Mono', sans-serif; font-weight: 400;
-      font-size: 0.85rem; color: rgba(210,180,130,0.7);
+      font-family: 'JetBrains Mono', monospace; font-weight: 400;
+      font-size: 0.85rem; color: rgba(0,200,170,0.7);
       text-decoration: none; letter-spacing: 3px; text-transform: uppercase;
     }
-    .nav-logo:hover { color: rgba(210,180,130,1); }
+    .nav-logo:hover { color: rgba(0,200,170,1); }
     .nav-links { display: flex; gap: 20px; list-style: none; }
     .nav-links a {
-      color: rgba(210,180,130,0.5); text-decoration: none;
-      font-family: 'JetBrains Mono', sans-serif; font-size: 0.75rem;
+      color: rgba(0,180,155,0.5); text-decoration: none;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
       font-weight: 300; letter-spacing: 2px; text-transform: uppercase;
       transition: color 0.2s;
     }
-    .nav-links a:hover, .nav-links a.active { color: rgba(210,180,130,0.9); }
+    .nav-links a:hover, .nav-links a.active { color: rgba(0,200,170,0.9); }
     @media(max-width:520px){ .nav-links { display: none; } }
   </style>
 </head>
@@ -57,7 +57,6 @@
     <a class="nav-logo" href="index.html">epsiCTRON</a>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
       <li><a href="resume.html">Resume</a></li>
       <li><a href="breathe.html" class="active">Breathe</a></li>
     </ul>
@@ -197,8 +196,8 @@
       const progress = getPhaseProgress();
       const scale = phase === PHASES.IDLE ? 0.35 : 0.3 + progress * 0.7;
       const glowIntensity = phase === PHASES.IDLE ? 15 : 15 + progress * 50;
-      const glowColor = phase === PHASES.INHALE_BURST ? "rgba(220,140,140,0.5)" : "rgba(230,180,100,0.5)";
-      const circleColor = phase === PHASES.INHALE_BURST ? "rgba(220,120,120,0.25)" : "rgba(220,170,90,0.2)";
+      const glowColor = phase === PHASES.INHALE_BURST ? "rgba(0,229,180,0.5)" : "rgba(0,137,123,0.5)";
+      const circleColor = phase === PHASES.INHALE_BURST ? "rgba(0,200,160,0.2)" : "rgba(0,137,123,0.18)";
       const transitionSpeed = phase === PHASES.INHALE_BURST ? "0.15s" : "0.3s";
 
       const formatTime = (s) => {
@@ -211,13 +210,13 @@
       return (
         <div style={{
           minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center",
-          justifyContent: "center", background: "radial-gradient(ellipse at 50% 50%, #1a1612 0%, #0f0d0a 100%)",
-          fontFamily: "'JetBrains Mono', sans-serif", color: "#d4c4a8", position: "relative", overflow: "hidden", padding: 20,
+          justifyContent: "center", background: "radial-gradient(ellipse at 50% 50%, #071a14 0%, #040e0a 100%)",
+          fontFamily: "'JetBrains Mono', monospace", color: "#a0d8cc", position: "relative", overflow: "hidden", padding: 20,
         }}>
           {particles.map(i => (
             <div key={i} style={{
               position: "absolute", width: 2 + (i % 3) * 2, height: 2 + (i % 3) * 2, borderRadius: "50%",
-              background: `rgba(220,180,120,${0.08 + (i % 4) * 0.04})`,
+              background: `rgba(0,180,150,${0.06 + (i % 4) * 0.03})`,
               left: `${8 + (i * 7.3) % 84}%`, top: `${5 + (i * 11.7) % 85}%`,
               animation: `floatParticle ${6 + (i % 4) * 2}s ease-in-out infinite`,
               animationDelay: `${i * 0.7}s`,
@@ -227,7 +226,7 @@
           <div style={{ position: "absolute", top: 64, textAlign: "center", animation: "fadeInUp 1s ease" }}>
             <h1 style={{
               fontSize: 28, fontWeight: 300, letterSpacing: 6, textTransform: "uppercase",
-              margin: 0, color: "rgba(210,180,130,0.6)", fontFamily: "'JetBrains Mono', sans-serif",
+              margin: 0, color: "rgba(0,180,150,0.6)", fontFamily: "'JetBrains Mono', monospace",
             }}>Breathe</h1>
           </div>
 
@@ -235,15 +234,15 @@
             {/* Outer ring */}
             <div style={{
               position: "absolute", width: "100%", height: "100%", borderRadius: "50%",
-              border: `5px solid rgba(200,165,100,${scale > 0.95 ? 0.5 : isRunning ? 0.2 : 0.12})`,
-              boxShadow: scale > 0.95 ? "0 0 30px rgba(200,165,100,0.2), inset 0 0 30px rgba(200,165,100,0.06)"
-                : isRunning ? "0 0 20px rgba(200,165,100,0.06), inset 0 0 20px rgba(200,165,100,0.02)" : "none",
+              border: `5px solid rgba(0,137,123,${scale > 0.95 ? 0.6 : isRunning ? 0.25 : 0.15})`,
+              boxShadow: scale > 0.95 ? "0 0 30px rgba(0,137,123,0.25), inset 0 0 30px rgba(0,137,123,0.08)"
+                : isRunning ? "0 0 20px rgba(0,137,123,0.08), inset 0 0 20px rgba(0,137,123,0.03)" : "none",
               transition: "border-color 0.3s ease, box-shadow 0.3s ease",
             }} />
             {/* Breathing circle */}
             <div style={{
               width: "100%", height: "100%", borderRadius: "50%", background: circleColor,
-              border: phase === PHASES.INHALE_BURST ? "4px solid rgba(220,140,140,0.45)" : "4px solid rgba(210,170,100,0.3)",
+              border: phase === PHASES.INHALE_BURST ? "4px solid rgba(0,229,180,0.5)" : "4px solid rgba(0,137,123,0.35)",
               transform: `scale(${scale})`,
               transition: `transform ${transitionSpeed} ease-out, box-shadow ${transitionSpeed} ease-out, background 0.3s ease, border 0.3s ease`,
               boxShadow: `0 0 ${glowIntensity}px ${glowColor}`,
@@ -252,12 +251,12 @@
             {/* Inner timer */}
             <div style={{
               position: "absolute", width: 110, height: 110, borderRadius: "50%",
-              border: "5px solid rgba(200,165,100,0.15)", background: "rgba(180,140,80,0.06)",
+              border: "5px solid rgba(0,137,123,0.2)", background: "rgba(0,100,80,0.08)",
               pointerEvents: "none", display: "flex", alignItems: "center", justifyContent: "center",
             }}>
               <div style={{
-                fontSize: 24, fontWeight: 300, fontFamily: "'JetBrains Mono', sans-serif",
-                color: "rgba(230,210,170,0.9)", lineHeight: 1, textShadow: "0 0 15px rgba(210,170,100,0.3)", letterSpacing: 2,
+                fontSize: 24, fontWeight: 300, fontFamily: "'JetBrains Mono', monospace",
+                color: "rgba(160,220,210,0.9)", lineHeight: 1, textShadow: "0 0 15px rgba(0,137,123,0.4)", letterSpacing: 2,
               }}>
                 {phase === PHASES.IDLE ? `${sessionMinutes}:00` : formatTime(sessionTimeLeft)}
               </div>
@@ -266,15 +265,15 @@
 
           <div style={{
             textAlign: "center", marginBottom: 40, minHeight: 44,
-            fontFamily: "'JetBrains Mono', sans-serif",
+            fontFamily: "'JetBrains Mono', monospace",
           }}>
-            <div style={{ fontSize: 16, fontWeight: 300, letterSpacing: 3, textTransform: "uppercase", color: "rgba(210,180,130,0.6)" }}>
+            <div style={{ fontSize: 16, fontWeight: 300, letterSpacing: 3, textTransform: "uppercase", color: "rgba(0,180,150,0.7)" }}>
               {phase === PHASES.IDLE && "Ready"}
               {phase === PHASES.INHALE_SLOW && "Inhale"}
               {phase === PHASES.INHALE_BURST && "Inhale"}
               {phase === PHASES.EXHALE && "Exhale"}
             </div>
-            <div style={{ fontSize: 11, fontWeight: 300, letterSpacing: 2, textTransform: "uppercase", color: "rgba(210,180,130,0.35)", marginTop: 6 }}>
+            <div style={{ fontSize: 11, fontWeight: 300, letterSpacing: 2, textTransform: "uppercase", color: "rgba(0,180,150,0.35)", marginTop: 6 }}>
               {phase === PHASES.INHALE_SLOW && "slowly · through nose"}
               {phase === PHASES.INHALE_BURST && "sharp burst · through nose"}
               {phase === PHASES.EXHALE && "through mouth"}
@@ -288,30 +287,30 @@
               pointerEvents: isRunning ? "none" : "auto", height: 52,
             }}>
               <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 10, fontFamily: "'JetBrains Mono', sans-serif", fontWeight: 300, letterSpacing: 2, textTransform: "uppercase", color: "rgba(180,155,110,0.4)", marginBottom: 8 }}>Session</div>
+                <div style={{ fontSize: 10, fontFamily: "'JetBrains Mono', monospace", fontWeight: 300, letterSpacing: 2, textTransform: "uppercase", color: "rgba(0,137,123,0.5)", marginBottom: 8 }}>Session</div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <button onClick={() => setSessionMinutes(Math.max(1, sessionMinutes - 1))} style={{ width: 28, height: 28, borderRadius: "50%", border: "1px solid rgba(200,165,100,0.15)", background: "transparent", color: "rgba(210,180,130,0.6)", fontSize: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>−</button>
-                  <span style={{ fontSize: 20, fontFamily: "'JetBrains Mono', sans-serif", fontWeight: 300, color: "rgba(230,210,170,0.9)", minWidth: 56, textAlign: "center" }}>{sessionMinutes} min</span>
-                  <button onClick={() => setSessionMinutes(Math.min(30, sessionMinutes + 1))} style={{ width: 28, height: 28, borderRadius: "50%", border: "1px solid rgba(200,165,100,0.15)", background: "transparent", color: "rgba(210,180,130,0.6)", fontSize: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
+                  <button onClick={() => setSessionMinutes(Math.max(1, sessionMinutes - 1))} style={{ width: 28, height: 28, borderRadius: "50%", border: "1px solid rgba(0,137,123,0.2)", background: "transparent", color: "rgba(0,180,150,0.7)", fontSize: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>−</button>
+                  <span style={{ fontSize: 20, fontFamily: "'JetBrains Mono', monospace", fontWeight: 300, color: "rgba(160,220,210,0.9)", minWidth: 56, textAlign: "center" }}>{sessionMinutes} min</span>
+                  <button onClick={() => setSessionMinutes(Math.min(30, sessionMinutes + 1))} style={{ width: 28, height: 28, borderRadius: "50%", border: "1px solid rgba(0,137,123,0.2)", background: "transparent", color: "rgba(0,180,150,0.7)", fontSize: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
                 </div>
               </div>
-              <div style={{ width: 1, height: 36, background: "rgba(200,165,100,0.1)" }} />
+              <div style={{ width: 1, height: 36, background: "rgba(0,137,123,0.15)" }} />
               <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 10, fontFamily: "'JetBrains Mono', sans-serif", fontWeight: 300, letterSpacing: 2, textTransform: "uppercase", color: "rgba(180,155,110,0.4)", marginBottom: 8 }}>Breath</div>
+                <div style={{ fontSize: 10, fontFamily: "'JetBrains Mono', monospace", fontWeight: 300, letterSpacing: 2, textTransform: "uppercase", color: "rgba(0,137,123,0.5)", marginBottom: 8 }}>Breath</div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <button onClick={() => setDuration(Math.max(3, duration - 1))} style={{ width: 28, height: 28, borderRadius: "50%", border: "1px solid rgba(200,165,100,0.15)", background: "transparent", color: "rgba(210,180,130,0.6)", fontSize: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>−</button>
-                  <span style={{ fontSize: 20, fontFamily: "'JetBrains Mono', sans-serif", fontWeight: 300, color: "rgba(230,210,170,0.9)", minWidth: 30, textAlign: "center" }}>{duration}s</span>
-                  <button onClick={() => setDuration(Math.min(12, duration + 1))} style={{ width: 28, height: 28, borderRadius: "50%", border: "1px solid rgba(200,165,100,0.15)", background: "transparent", color: "rgba(210,180,130,0.6)", fontSize: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
+                  <button onClick={() => setDuration(Math.max(3, duration - 1))} style={{ width: 28, height: 28, borderRadius: "50%", border: "1px solid rgba(0,137,123,0.2)", background: "transparent", color: "rgba(0,180,150,0.7)", fontSize: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>−</button>
+                  <span style={{ fontSize: 20, fontFamily: "'JetBrains Mono', monospace", fontWeight: 300, color: "rgba(160,220,210,0.9)", minWidth: 30, textAlign: "center" }}>{duration}s</span>
+                  <button onClick={() => setDuration(Math.min(12, duration + 1))} style={{ width: 28, height: 28, borderRadius: "50%", border: "1px solid rgba(0,137,123,0.2)", background: "transparent", color: "rgba(0,180,150,0.7)", fontSize: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
                 </div>
               </div>
             </div>
 
             <button onClick={isRunning ? stopBreathing : startBreathing} style={{
               padding: "12px 36px", borderRadius: 24,
-              border: isRunning ? "1px solid rgba(255,130,130,0.2)" : "1px solid rgba(200,165,100,0.2)",
-              background: isRunning ? "rgba(255,100,100,0.08)" : "rgba(200,165,100,0.08)",
-              color: isRunning ? "rgba(255,160,160,0.8)" : "rgba(220,190,140,0.8)",
-              fontSize: 13, fontFamily: "'JetBrains Mono', sans-serif", fontWeight: 400,
+              border: isRunning ? "1px solid rgba(255,100,100,0.25)" : "1px solid rgba(0,137,123,0.3)",
+              background: isRunning ? "rgba(255,100,100,0.08)" : "rgba(0,137,123,0.1)",
+              color: isRunning ? "rgba(255,160,160,0.8)" : "rgba(160,220,210,0.8)",
+              fontSize: 13, fontFamily: "'JetBrains Mono', monospace", fontWeight: 400,
               letterSpacing: 3, textTransform: "uppercase", cursor: "pointer", transition: "all 0.3s ease",
             }}>
               {isRunning ? "Stop" : "Start"}
