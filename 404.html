@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>~</text></svg>">
+  <title>404 – epsiCTRON</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent: #00897b;
+      --accent-dark: #004d40;
+      --accent-light: #e0f2f1;
+      --dark: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --bg: #f8fafc;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+    .code {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(4rem, 12vw, 8rem);
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    p {
+      color: var(--muted);
+      font-size: .92rem;
+      max-width: 400px;
+      margin-bottom: 28px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-size: .88rem;
+      font-weight: 600;
+      text-decoration: none;
+      background: var(--accent-dark);
+      color: #fff;
+      transition: background .2s;
+    }
+    .btn:hover { background: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="code">404</div>
+  <h1>Signal Not Found</h1>
+  <p>Looks like this frequency bin is empty. The page you're looking for doesn't exist or has been moved.</p>
+  <a href="index.html" class="btn">Back to Home</a>
+</body>
+</html>

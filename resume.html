@@ -3,6 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Resume of Kishor KS – Senior ML/DSP Engineer with 6+ years at NVIDIA, Honeywell. M.Tech IIT Hyderabad. Speech, Radar, Deep Learning.">
+  <meta property="og:title" content="Kishor KS – Resume">
+  <meta property="og:description" content="Senior ML/DSP Engineer. 6+ years at NVIDIA, Honeywell. Speech processing, FMCW Radar, Deep Learning.">
+  <meta property="og:type" content="profile">
+  <meta property="og:url" content="https://epsictron.github.io/resume.html">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>~</text></svg>">
   <title>Kishor KS – Resume</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -382,6 +389,21 @@
     .demo-arrow { color:var(--muted); font-size:1rem; transition:color .2s, transform .2s; }
     .demo-card:hover .demo-arrow { color:var(--accent); transform:translateX(3px); }
 
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark); color: rgba(255,255,255,.5); text-align: center;
+      padding: 24px 5%; font-size: .78rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── SCROLL ANIMATIONS ── */
+    .fade-in {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .grid { grid-template-columns: 1fr; }
@@ -431,7 +453,7 @@
       <aside class="sidebar">
 
         <!-- Education -->
-        <div class="card">
+        <div class="card fade-in">
           <div class="card-title"><i class="fas fa-graduation-cap"></i> Education</div>
           <div class="edu-item">
             <div class="edu-degree">M.Tech</div>
@@ -450,7 +472,7 @@
         </div>
 
         <!-- Technical Skills -->
-        <div class="card">
+        <div class="card fade-in">
           <div class="card-title"><i class="fas fa-code"></i> Technical Skills</div>
           <div class="skill-group">
             <div class="skill-label">Languages</div>
@@ -478,7 +500,7 @@
         </div>
 
         <!-- Interests -->
-        <div class="card">
+        <div class="card fade-in">
           <div class="card-title"><i class="fas fa-brain"></i> Interests</div>
           <div class="interest-tags">
             <span class="int-tag">Machine Learning</span>
@@ -489,7 +511,7 @@
         </div>
 
         <!-- Coursework -->
-        <div class="card">
+        <div class="card fade-in">
           <div class="card-title"><i class="fas fa-book-open"></i> Coursework</div>
           <div class="skill-tags">
             <span class="tag">Machine Learning</span>
@@ -506,7 +528,7 @@
       <main class="main">
 
         <!-- Experience -->
-        <div class="card">
+        <div class="card fade-in">
           <div class="section-hd"><i class="fas fa-briefcase"></i> Industry Experience <span style="color:var(--muted);font-weight:400;font-size:.9em;">6 Years</span></div>
           <div class="timeline">
             <div class="tl-item">
@@ -537,7 +559,7 @@
         </div>
 
         <!-- Projects -->
-        <div class="card">
+        <div class="card fade-in">
           <div class="section-hd"><i class="fas fa-layer-group"></i> Projects</div>
           <div class="proj-grid">
 
@@ -582,7 +604,7 @@
         </div>
 
         <!-- Publication -->
-        <div class="card">
+        <div class="card fade-in">
           <div class="section-hd"><i class="fas fa-newspaper"></i> Publication</div>
           <div class="pub-card">
             <div class="pub-icon"><i class="fas fa-file-alt"></i></div>
@@ -598,11 +620,11 @@
         </div>
 
         <!-- Interactive Demos -->
-        <div class="card">
+        <div class="card fade-in">
           <div class="section-hd"><i class="fas fa-chart-line"></i> Interactive DSP Demos</div>
           <p style="font-size:.84rem;color:var(--mid);margin-bottom:16px;line-height:1.6;">Browser-based visualisations I built to share intuition behind signal processing concepts. Drag sliders, tweak parameters, and watch the maths come alive.</p>
           <div class="demo-list">
-            <a href="FrequencyRes.html" class="demo-card">
+            <a href="frequency-resolution.html" class="demo-card">
               <div class="demo-num">01</div>
               <div class="demo-body">
                 <div class="demo-name">Frequency Resolution & Windowing</div>
@@ -610,7 +632,7 @@
               </div>
               <span class="demo-arrow">&#8594;</span>
             </a>
-            <a href="impulseRes.html" class="demo-card">
+            <a href="impulse-response.html" class="demo-card">
               <div class="demo-num">02</div>
               <div class="demo-body">
                 <div class="demo-name">Impulse Response & Convolution</div>
@@ -618,7 +640,7 @@
               </div>
               <span class="demo-arrow">&#8594;</span>
             </a>
-            <a href="polezero.html" class="demo-card">
+            <a href="pole-zero.html" class="demo-card">
               <div class="demo-num">03</div>
               <div class="demo-body">
                 <div class="demo-name">Pole-Zero Plot & Frequency Response</div>
@@ -633,5 +655,15 @@
     </div>
   </div>
 
+<footer>
+  Built by Kishor KS · <a href="https://github.com/epsictron/epsictron.github.io">Source on GitHub</a>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
 </body>
 </html>

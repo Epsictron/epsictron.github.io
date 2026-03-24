@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Frequency Domain – epsiCTRON</title>
+  <meta name="description" content="Interactive convolution demo – visualize impulse response, LTI system output, and how inputs converge to h(t) as duration approaches zero.">
+  <meta property="og:title" content="Impulse Response & Convolution – epsiCTRON">
+  <meta property="og:description" content="Watch how an LTI system responds to different inputs and see convolution in action.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://epsictron.github.io/impulse-response.html">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>~</text></svg>">
+  <title>Impulse Response &amp; Convolution – epsiCTRON</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -85,29 +91,21 @@
       width:18px; height:18px; border-radius:50%; background:var(--accent); border:2px solid #fff; cursor:pointer;
     }
 
-    /* ── WINDOW TOGGLE ── */
-    .win-toggle { display:flex; gap:8px; margin-top:6px; }
-    .win-btn {
-      flex:1; padding:7px 0; border-radius:8px; border:1.5px solid var(--border);
-      background:var(--bg); font-family:'Space Grotesk',sans-serif; font-size:.78rem;
-      font-weight:700; color:var(--muted); cursor:pointer; transition:all .18s;
-    }
-    .win-btn.active {
-      background:var(--accent-dark); color:#fff; border-color:var(--accent-dark);
-    }
-
     /* ── PLOTS ── */
     .plots-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
     @media(max-width:640px){ .plots-grid { grid-template-columns:1fr; } }
     .plot-card { padding:16px 18px; }
     canvas { display:block; width:100%; border-radius:8px; }
-    .plot-canvas { height:260px; }
-    @media(min-width:768px){ .plot-canvas { height:320px; } }
+    #c-input  { height:260px; }
+    #c-output { height:260px; }
+    @media(min-width:768px){ #c-input, #c-output { height:320px; } }
 
     /* Legend */
     .legend { display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; }
     .leg { display:flex; align-items:center; gap:6px; font-size:.73rem; font-weight:600; color:var(--mid); }
     .leg-line { width:16px; height:3px; border-radius:2px; }
+    .leg-dash { width:16px; height:3px; border-radius:2px;
+      background: repeating-linear-gradient(90deg, #10b981 0 4px, transparent 4px 8px); }
 
     /* ── CONCEPT ── */
     .concept { background:linear-gradient(135deg,var(--accent-light),#f0faf9); border:1px solid #b2dfdb; border-radius:12px; padding:18px 22px; }
@@ -115,6 +113,15 @@
     .concept ul { list-style:none; display:flex; flex-direction:column; gap:7px; }
     .concept li { font-size:.82rem; color:var(--mid); padding-left:14px; position:relative; line-height:1.55; }
     .concept li::before { content:'›'; position:absolute; left:0; color:var(--accent); font-weight:700; }
+
+    /* ── FOOTER ── */
+    footer { background: var(--dark); color: rgba(255,255,255,.5); text-align: center; padding: 24px 5%; font-size: .78rem; }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── SCROLL ANIMATIONS ── */
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
   </style>
 </head>
 <body>
@@ -131,9 +138,10 @@
 <!-- HERO -->
 <section class="hero">
   <div class="hero-inner">
-    <div class="badge">01 · Frequency Domain</div>
-    <h1>Frequency Response &amp; the DFT</h1>
-    <p>Compose two sinusoids, compute the Discrete Fourier Transform, and watch how windowing, sample count, and frequency affect spectral leakage.</p>
+    <div class="badge">02 · Time Domain</div>
+    <h1>Impulse Response &amp; Convolution</h1>
+    <p>Watch how an LTI system with impulse response h(t) = e<sup>−t</sup> responds to different input shapes.
+       Drag C towards zero and see the output converge to the impulse response itself.</p>
   </div>
 </section>
 
@@ -142,53 +150,24 @@
 
   <!-- Info pills -->
   <div class="card">
-    <div class="card-title">Signal Properties</div>
+    <div class="card-title">System Properties</div>
     <div class="pills">
-      <div class="pill"><div class="lbl">Frequency Resolution Δf</div><div class="val" id="info-df">1.00 Hz</div></div>
-      <div class="pill"><div class="lbl">x1 frequency</div><div class="val">1 Hz</div></div>
-      <div class="pill"><div class="lbl">x2 frequency f₂</div><div class="val" id="info-f2">1.00 Hz</div></div>
-      <div class="pill"><div class="lbl">Window</div><div class="val" id="info-win">Rectangular</div></div>
+      <div class="pill"><div class="lbl">Transfer Function H(s)</div><div class="val">1 / (s + 1)</div></div>
+      <div class="pill"><div class="lbl">Impulse Response h(t)</div><div class="val">e⁻ᵗ · u(t)</div></div>
+      <div class="pill"><div class="lbl">Both inputs have unit area</div><div class="val">∫ x(t) dt = 1</div></div>
+      <div class="pill"><div class="lbl">Input Duration / Decay C</div><div class="val" id="info-c">1.00 s</div></div>
     </div>
   </div>
 
   <!-- Controls -->
   <div class="card">
-    <div class="card-title">Signal Parameters</div>
+    <div class="card-title">Input Parameters</div>
     <div class="ctrl-grid">
-
       <div class="ctrl-item">
-        <label>Amplitude A₂ <span class="vbadge" id="lbl-a2">1.00</span></label>
-        <input type="range" id="sl-a2" min="0" max="1" value="1" step="0.01">
-        <div class="ctrl-sub">Amplitude of the second sinusoid</div>
+        <label>Duration / Decay Constant C <span class="vbadge" id="lbl-c">1.00 s</span></label>
+        <input type="range" id="sl-c" min="0.1" max="3.0" value="1.0" step="0.01">
+        <div class="ctrl-sub">Controls rect pulse width and exp decay time-constant</div>
       </div>
-
-      <div class="ctrl-item">
-        <label>Frequency f₂ (Hz) <span class="vbadge" id="lbl-f2">1.00 Hz</span></label>
-        <input type="range" id="sl-f2" min="0" max="4" value="1" step="0.01">
-        <div class="ctrl-sub">Frequency of the second sinusoid</div>
-      </div>
-
-      <div class="ctrl-item">
-        <label>N Samples <span class="vbadge" id="lbl-n">64</span></label>
-        <input type="range" id="sl-n" min="1" max="128" value="64" step="1">
-        <div class="ctrl-sub">Number of time-domain samples for DFT</div>
-      </div>
-
-      <div class="ctrl-item">
-        <label>Phase φ (rad) <span class="vbadge" id="lbl-phi">π</span></label>
-        <input type="range" id="sl-phi" min="0" max="6.2832" value="3.14159" step="0.01">
-        <div class="ctrl-sub">Phase offset of the second sinusoid</div>
-      </div>
-
-      <div class="ctrl-item" style="grid-column:1/-1">
-        <label style="margin-bottom:8px;">Window Function <span class="vbadge" id="lbl-win">Rectangular</span></label>
-        <div class="win-toggle">
-          <button class="win-btn active" id="btn-rect" onclick="setWindow('rect')">Rectangular</button>
-          <button class="win-btn"        id="btn-hamm" onclick="setWindow('hamm')">Hamming</button>
-        </div>
-        <div class="ctrl-sub">Hamming window reduces spectral leakage at the cost of resolution</div>
-      </div>
-
     </div>
   </div>
 
@@ -196,35 +175,34 @@
   <div class="plots-grid">
 
     <div class="card plot-card">
-      <div class="card-title">Time Domain</div>
-      <canvas id="c-time" class="plot-canvas"></canvas>
+      <div class="card-title">Input Signals x(t)</div>
+      <canvas id="c-input"></canvas>
       <div class="legend">
-        <div class="leg"><div class="leg-line" style="background:#3b82f6"></div>x₁(t)</div>
-        <div class="leg"><div class="leg-line" style="background:#f97316"></div>x₂(t)</div>
-        <div class="leg"><div class="leg-line" style="background:#ef4444"></div>x₃ = x₁+x₂</div>
+        <div class="leg"><div class="leg-line" style="background:#3b82f6"></div>Rect Pulse x₁(t)</div>
+        <div class="leg"><div class="leg-line" style="background:#f97316"></div>Exp Decay x₂(t)</div>
       </div>
     </div>
 
     <div class="card plot-card">
-      <div class="card-title">Frequency Domain (Magnitude, dB)</div>
-      <canvas id="c-freq" class="plot-canvas"></canvas>
+      <div class="card-title">Output Signals &nbsp; y(t) = (x ∗ h)(t)</div>
+      <canvas id="c-output"></canvas>
       <div class="legend">
-        <div class="leg"><div class="leg-line" style="background:#3b82f6"></div>X₁</div>
-        <div class="leg"><div class="leg-line" style="background:#f97316"></div>X₂</div>
-        <div class="leg"><div class="leg-line" style="background:#ef4444"></div>X₃</div>
+        <div class="leg"><div class="leg-line" style="background:#3b82f6"></div>y₁(t) — rect → system</div>
+        <div class="leg"><div class="leg-line" style="background:#f97316"></div>y₂(t) — exp → system</div>
+        <div class="leg"><div class="leg-dash"></div>h(t) = e⁻ᵗ (reference)</div>
       </div>
     </div>
 
   </div>
 
   <!-- Key Concepts -->
-  <div class="concept">
+  <div class="concept fade-in">
     <h3>Key Concepts</h3>
     <ul>
-      <li><strong>Frequency Resolution Δf = 1/(N·Ts)</strong> — the spacing between DFT bins equals the reciprocal of the total record length. More samples → finer resolution.</li>
-      <li><strong>Spectral Leakage</strong> — when a sinusoid does not fall exactly on a DFT bin, energy "leaks" into neighbouring bins, smearing the spectrum.</li>
-      <li><strong>Hamming Window</strong> — multiplying the time samples by w[n] = 0.54 − 0.46·cos(2πn/(N−1)) tapers the ends to zero, greatly reducing leakage. The main lobe widens slightly but side-lobes drop by ~40 dB.</li>
-      <li><strong>Try this:</strong> Set f₂ = 1.5 Hz (between bins) with Rectangular and watch the leakage. Switch to Hamming to see the improvement.</li>
+      <li><strong>Impulse Response h(t)</strong> — for this first-order system h(t) = e⁻ᵗ·u(t). It is the output when the input is a Dirac delta δ(t).</li>
+      <li><strong>Convolution y(t) = (x ∗ h)(t)</strong> — the output for any input is the convolution integral ∫ x(τ)·h(t − τ) dτ. The system "remembers" its past inputs.</li>
+      <li><strong>Unit-area inputs</strong> — both inputs are normalised so ∫ x(t) dt = 1. As C → 0 the rect pulse → δ(t), so the output → h(t) = e⁻ᵗ.</li>
+      <li><strong>Try this:</strong> Drag C down to 0.1 and watch y₁(t) (blue) converge to the dashed green reference h(t). This is the definition of impulse response made visual.</li>
     </ul>
   </div>
 
@@ -232,108 +210,64 @@
 
 <script>
 // ═══════════════════════════════════════════════════
-//  Constants
-// ═══════════════════════════════════════════════════
-const Ts       = 1 / 64;   // sampling period
-const noDFT    = 1024;     // DFT size (zero-padded)
-const noPoints = 150;      // number of frequency bins to display
-
-const C1 = '#3b82f6';
-const C2 = '#f97316';
-const C3 = '#ef4444';
-
-let windowType = 'rect';
-
-// ═══════════════════════════════════════════════════
 //  Helpers
 // ═══════════════════════════════════════════════════
 function niceStep(range, targetLines) {
   if (range <= 0) return 1;
-  const raw  = range / targetLines;
-  const mag  = Math.pow(10, Math.floor(Math.log10(raw)));
-  const n    = raw / mag;
+  const raw = range / targetLines;
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const n   = raw / mag;
   const nice = n < 1.5 ? 1 : n < 3 ? 2 : n < 7 ? 5 : 10;
   return nice * mag;
 }
 
-function niceDecimalPlaces(step) {
-  if (step >= 1)    return 0;
-  if (step >= 0.1)  return 1;
-  if (step >= 0.01) return 2;
-  return 3;
-}
-
 // ═══════════════════════════════════════════════════
-//  Signal + DFT computation
+//  Signal computation
 // ═══════════════════════════════════════════════════
-function computeTimeDomain(A2, f2, phi, N) {
-  const pts = [];
-  const tMax = (N - 1) * Ts;
-  for (let i = 0; i < N; i++) {
-    const t  = i * Ts;
-    const x1 = Math.cos(2 * Math.PI * 1 * t);
-    const x2 = A2 * Math.cos(2 * Math.PI * f2 * t + phi);
-    pts.push({ x: t, y1: x1, y2: x2, y3: x1 + x2 });
-  }
-  return { pts, tMax };
-}
+const T_MAX = 6;
+const N_PT  = 600;
+const dt    = T_MAX / N_PT;
 
-function hammingWindow(N) {
-  const w = new Float64Array(N);
-  for (let n = 0; n < N; n++) {
-    w[n] = 0.54 - 0.46 * Math.cos(2 * Math.PI * n / (N - 1));
-  }
-  return w;
-}
+function compute(C) {
+  const inp = [], out = [];
+  for (let i = 0; i <= N_PT; i++) {
+    const t = i * dt;
 
-// Naive DFT magnitude — zero-padded to noDFT
-function computeDFT(samples) {
-  const N  = samples.length;
-  const M  = noDFT;
-  const re = new Float64Array(M);
-  const im = new Float64Array(M);
+    // --- inputs ---
+    const x1 = (t >= 0 && t < C) ? (1 / C) : 0;          // rect pulse (unit area)
+    const x2 = (1 / C) * Math.exp(-t / C);                  // exp decay  (unit area)
 
-  for (let k = 0; k < M; k++) {
-    let sumR = 0, sumI = 0;
-    for (let n = 0; n < N; n++) {
-      const angle = 2 * Math.PI * k * n / M;
-      sumR += samples[n] * Math.cos(angle);
-      sumI -= samples[n] * Math.sin(angle);
+    // --- outputs  y = x * h,  h(t) = e^{-t} ---
+    let y1;
+    if (t <= C) {
+      y1 = (1 / C) * (1 - Math.exp(-t));
+    } else {
+      y1 = (1 / C) * (Math.exp(C) - 1) * Math.exp(-t);
     }
-    re[k] = sumR;
-    im[k] = sumI;
-  }
-  return { re, im };
-}
 
-function magnitudeDB(re, im, K) {
-  const pts = [];
-  const fs  = 1 / Ts;
-  for (let k = 0; k < K; k++) {
-    const freq = k * fs / noDFT;
-    const mag  = Math.sqrt(re[k] * re[k] + im[k] * im[k]);
-    const db   = mag > 0 ? 20 * Math.log10(mag) : -120;
-    pts.push({ x: freq, y: Math.max(-80, Math.min(40, db)) });
-  }
-  return pts;
-}
+    let y2;
+    if (Math.abs(C - 1) < 0.02) {
+      // L'Hôpital limit: lim_{C→1} (e^{-t} - e^{-t/C})/(1-C) = t·e^{-t}
+      y2 = t * Math.exp(-t);
+    } else {
+      y2 = (1 / (1 - C)) * (Math.exp(-t) - Math.exp(-t / C));
+    }
 
-function getSignalSamples(A2, f2, phi, N, key) {
-  const w = windowType === 'hamm' ? hammingWindow(N) : null;
-  const s = new Float64Array(N);
-  for (let i = 0; i < N; i++) {
-    const t  = i * Ts;
-    const x1 = Math.cos(2 * Math.PI * 1 * t);
-    const x2 = A2 * Math.cos(2 * Math.PI * f2 * t + phi);
-    let val = key === 'y1' ? x1 : key === 'y2' ? x2 : (x1 + x2);
-    s[i] = w ? val * w[i] : val;
+    const h = Math.exp(-t);
+
+    inp.push({ x: t, y1: x1, y2: x2 });
+    out.push({ x: t, y1, y2, h });
   }
-  return s;
+  return { inp, out };
 }
 
 // ═══════════════════════════════════════════════════
 //  Generic canvas chart renderer
 // ═══════════════════════════════════════════════════
+const C1 = '#3b82f6';
+const C2 = '#f97316';
+const C3 = '#10b981';
+
 function drawChart(canvas, seriesList, cfg) {
   const dpr = window.devicePixelRatio || 1;
   const cw  = canvas.clientWidth;
@@ -399,16 +333,15 @@ function drawChart(canvas, seriesList, cfg) {
   ctx.save();
   ctx.beginPath(); ctx.rect(ML, MT, PW, PH); ctx.clip();
 
-  seriesList.forEach(({ pts, xKey, yKey, color, lw, dash }) => {
+  seriesList.forEach(({ pts, yKey, color, lw, dash }) => {
     if (!pts || pts.length < 2) return;
-    const xk = xKey ?? 'x';
     ctx.strokeStyle = color;
     ctx.lineWidth   = p(lw ?? 1.8);
     ctx.lineJoin    = 'round';
     ctx.setLineDash(dash ? dash.map(p) : []);
     ctx.beginPath();
     pts.forEach((pt, i) => {
-      const px = mx(pt[xk]);
+      const px = mx(pt.x);
       const py = my(Math.max(yMin - 5, Math.min(yMax + 5, pt[yKey])));
       i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
     });
@@ -435,90 +368,66 @@ function drawChart(canvas, seriesList, cfg) {
 // ═══════════════════════════════════════════════════
 //  Render
 // ═══════════════════════════════════════════════════
-const cvTime = document.getElementById('c-time');
-const cvFreq = document.getElementById('c-freq');
+const cvInp = document.getElementById('c-input');
+const cvOut = document.getElementById('c-output');
 
 function render() {
-  const A2  = +document.getElementById('sl-a2').value;
-  const f2  = +document.getElementById('sl-f2').value;
-  const N   = +document.getElementById('sl-n').value;
-  const phi = +document.getElementById('sl-phi').value;
+  const C = +document.getElementById('sl-c').value;
+  document.getElementById('lbl-c').textContent  = C.toFixed(2) + ' s';
+  document.getElementById('info-c').textContent = C.toFixed(2) + ' s';
 
-  // Update labels
-  document.getElementById('lbl-a2').textContent  = A2.toFixed(2);
-  document.getElementById('lbl-f2').textContent  = f2.toFixed(2) + ' Hz';
-  document.getElementById('lbl-n').textContent   = N;
-  const phiRatio = phi / Math.PI;
-  document.getElementById('lbl-phi').textContent = phiRatio.toFixed(2) + 'π';
+  const { inp, out } = compute(C);
 
-  // Info pills
-  const df = 1 / (N * Ts);
-  document.getElementById('info-df').textContent  = df.toFixed(3) + ' Hz';
-  document.getElementById('info-f2').textContent  = f2.toFixed(2) + ' Hz';
-  document.getElementById('info-win').textContent = windowType === 'rect' ? 'Rectangular' : 'Hamming';
+  // input chart — dynamic Y scale
+  const yMaxInp = (1 / C) * 1.15;
+  const yStepInp = niceStep(yMaxInp, 5);
 
-  // ── Time domain ──
-  const { pts: tPts, tMax } = computeTimeDomain(A2, f2, phi, N);
-  const tStep = niceStep(tMax, 5);
-
-  drawChart(cvTime, [
-    { pts: tPts, yKey: 'y1', color: C1 },
-    { pts: tPts, yKey: 'y2', color: C2 },
-    { pts: tPts, yKey: 'y3', color: C3, lw: 2.2 },
+  drawChart(cvInp, [
+    { pts: inp, yKey: 'y1', color: C1 },
+    { pts: inp, yKey: 'y2', color: C2 },
   ], {
-    xMin: 0, xMax: tMax, yMin: -(1 + A2) * 1.15, yMax: (1 + A2) * 1.15,
-    xStep: tStep, yStep: niceStep((1 + A2) * 2.3, 5),
+    xMin: 0, xMax: T_MAX, yMin: 0, yMax: yMaxInp,
+    xStep: 1, yStep: yStepInp,
     xLabel: 'Time (s)', yLabel: 'Amplitude',
-    xDec: 2, yDec: 1,
+    xDec: 0, yDec: niceDecimalPlaces(yStepInp),
   });
 
-  // ── Frequency domain ──
-  const s1 = getSignalSamples(A2, f2, phi, N, 'y1');
-  const s2 = getSignalSamples(A2, f2, phi, N, 'y2');
-  const s3 = getSignalSamples(A2, f2, phi, N, 'y3');
-
-  const dft1 = computeDFT(s1);
-  const dft2 = computeDFT(s2);
-  const dft3 = computeDFT(s3);
-
-  const fPts1 = magnitudeDB(dft1.re, dft1.im, noPoints);
-  const fPts2 = magnitudeDB(dft2.re, dft2.im, noPoints);
-  const fPts3 = magnitudeDB(dft3.re, dft3.im, noPoints);
-
-  const fs = 1 / Ts;
-  const fMax = noPoints * fs / noDFT;
-
-  drawChart(cvFreq, [
-    { pts: fPts1, xKey: 'x', yKey: 'y', color: C1 },
-    { pts: fPts2, xKey: 'x', yKey: 'y', color: C2 },
-    { pts: fPts3, xKey: 'x', yKey: 'y', color: C3, lw: 2.2 },
+  // output chart — fixed Y scale (all outputs ≤ 1)
+  drawChart(cvOut, [
+    { pts: out, yKey: 'h',  color: C3, lw: 1.5, dash: [4, 4] },
+    { pts: out, yKey: 'y1', color: C1 },
+    { pts: out, yKey: 'y2', color: C2 },
   ], {
-    xMin: 0, xMax: fMax, yMin: -80, yMax: 40,
-    xStep: 1, yStep: 20,
-    xLabel: 'Frequency (Hz)', yLabel: 'Magnitude (dB)',
-    xDec: 0, yDec: 0,
+    xMin: 0, xMax: T_MAX, yMin: 0, yMax: 1.2,
+    xStep: 1, yStep: 0.2,
+    xLabel: 'Time (s)', yLabel: 'Amplitude',
+    xDec: 0, yDec: 1,
   });
 }
 
-// ═══════════════════════════════════════════════════
-//  Window toggle
-// ═══════════════════════════════════════════════════
-function setWindow(type) {
-  windowType = type;
-  document.getElementById('btn-rect').classList.toggle('active', type === 'rect');
-  document.getElementById('btn-hamm').classList.toggle('active', type === 'hamm');
-  document.getElementById('lbl-win').textContent = type === 'rect' ? 'Rectangular' : 'Hamming';
-  render();
+function niceDecimalPlaces(step) {
+  if (step >= 1) return 0;
+  if (step >= 0.1) return 1;
+  if (step >= 0.01) return 2;
+  return 3;
 }
 
 // ═══════════════════════════════════════════════════
 //  Events
 // ═══════════════════════════════════════════════════
-['sl-a2', 'sl-f2', 'sl-n', 'sl-phi'].forEach(id => {
-  document.getElementById(id).addEventListener('input', render);
-});
+document.getElementById('sl-c').addEventListener('input', render);
 window.addEventListener('resize', render);
 document.fonts.ready.then(render);
+
+// Scroll animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 </script>
+
+<footer>
+  Built by Kishor KS · <a href="index.html">Home</a> · <a href="resume.html">Resume</a>
+</footer>
 </body>
 </html>
