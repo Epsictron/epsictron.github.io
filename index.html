@@ -209,17 +209,19 @@
     .philosophy-card .philosophy-body { font-size:.85rem; color:var(--mid); line-height:1.75; }
     .philosophy-card .philosophy-body + .philosophy-body { margin-top:10px; }
 
-    /* KANNADA HERO QUOTE */
-    .hero-kannada {
-      margin-bottom:24px; display:flex; flex-direction:column; gap:4px;
-      border-left:3px solid rgba(255,255,255,.4); padding-left:14px;
+    /* KANNADA VACHANA QUOTE (inside card) */
+    .kannada-vachana {
+      display:flex; flex-direction:column; gap:3px;
+      border-left:3px solid var(--accent); padding-left:12px;
+      margin:12px 0 14px;
     }
-    .hero-kannada-quote {
-      font-family:'Noto Sans Kannada', sans-serif; font-size:1.05rem; font-weight:600;
-      color:#fff; letter-spacing:.5px; line-height:1.5;
+    .kannada-vachana-text {
+      font-family:'Noto Sans Kannada', sans-serif; font-size:1.1rem; font-weight:600;
+      color:var(--accent-dark); line-height:1.5;
     }
-    .hero-kannada-trans {
-      font-size:.78rem; color:rgba(255,255,255,.65); font-style:italic;
+    [data-theme="dark"] .kannada-vachana-text { color:var(--accent); }
+    .kannada-vachana-meta {
+      font-size:.75rem; color:var(--muted); font-style:italic;
     }
   </style>
 </head>
@@ -249,10 +251,6 @@
     <div class="hero-tag">Signal Processing · Deep Learning</div>
     <h1>Where Fourier Meets<br>Backpropagation</h1>
     <p>I'm Kishor KS — a signal processing and deep learning enthusiast. I live at the intersection of spectral analysis, radar waveforms, speech processing, and neural networks. This is my corner of the internet where DSP intuition meets deep learning magic.</p>
-    <div class="hero-kannada">
-      <span class="hero-kannada-quote">ಉದಯವಾಗಲಿ ನಮ್ಮ ಚೆಲುವ ಕನ್ನಡ ನಾಡು</span>
-      <span class="hero-kannada-trans">— "May our beautiful Kannada land rise and flourish"</span>
-    </div>
     <div class="hero-links">
       <a href="resume.html" class="btn btn-white">View Resume</a>
     </div>
@@ -290,6 +288,10 @@
       <div class="passion-icon" style="font-family:'Noto Sans Kannada',sans-serif;font-size:1.1rem;">ಕ</div>
       <h3>Kannada — ಕನ್ನಡ</h3>
       <p>Kannada is one of India's oldest classical languages, with a literary tradition spanning over 2,000 years. From the poetry of Pampa to the philosophy of Basavanna's Vachanas, its script and sound carry a depth that never ceases to move me. A language that shaped a civilization.</p>
+      <div class="kannada-vachana">
+        <span class="kannada-vachana-text">ಕಾಯಕವೇ ಕೈಲಾಸ</span>
+        <span class="kannada-vachana-meta">— Basavanna &nbsp;·&nbsp; "Work itself is worship"</span>
+      </div>
       <div class="passion-tags">
         <span class="ptag">Classical Language</span>
         <span class="ptag">Dravidian</span>
