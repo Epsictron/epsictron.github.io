@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Frequency Domain – epsiCTRON</title>
+  <meta name="description" content="Interactive DFT demo – explore frequency resolution, spectral leakage, and windowing with real-time visualizations.">
+  <meta property="og:title" content="Frequency Resolution & Windowing – epsiCTRON">
+  <meta property="og:description" content="Compose sinusoids, compute the DFT, and see how windowing affects spectral leakage in real time.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://epsictron.github.io/frequency-resolution.html">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>~</text></svg>">
+  <title>Frequency Resolution & Windowing – epsiCTRON</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -18,7 +24,18 @@
       --bg:     #f8fafc;
       --white:  #ffffff;
     }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); line-height: 1.6; }
+    [data-theme="dark"] {
+      --dark:   #e2e8f0;
+      --mid:    #cbd5e1;
+      --muted:  #94a3b8;
+      --border: #334155;
+      --bg:     #0f172a;
+      --white:  #1e293b;
+      --accent-light: #1a3a36;
+    }
+    [data-theme="dark"] .concept { background: linear-gradient(135deg, #1a3a36, #162a28); border-color: #2d5a52; }
+    [data-theme="dark"] .pill { background: #1a3a36; border-color: #2d5a52; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); line-height: 1.6; transition: background .3s, color .3s; }
 
     /* ── NAV ── */
     nav {
@@ -32,7 +49,42 @@
     nav ul { list-style:none; display:flex; gap:24px; }
     nav ul a { color:rgba(255,255,255,.8); text-decoration:none; font-size:.88rem; font-weight:500; transition:color .2s; }
     nav ul a:hover { color:#fff; }
-    @media(max-width:520px){ nav ul { display:none; } }
+    /* NAV RIGHT */
+    .nav-right { display:flex; align-items:center; gap:16px; }
+    .theme-btn {
+      background:none; border:none; color:rgba(255,255,255,.8); cursor:pointer;
+      font-size:1.1rem; padding:4px; transition:color .2s; line-height:1;
+    }
+    .theme-btn:hover { color:#fff; }
+    .hamburger {
+      display:none; background:none; border:none; cursor:pointer; padding:4px;
+      flex-direction:column; gap:4px;
+    }
+    .hamburger span {
+      display:block; width:20px; height:2px; background:#fff; border-radius:2px;
+      transition:transform .3s, opacity .3s;
+    }
+    .hamburger.active span:nth-child(1) { transform:rotate(45deg) translate(4px,4px); }
+    .hamburger.active span:nth-child(2) { opacity:0; }
+    .hamburger.active span:nth-child(3) { transform:rotate(-45deg) translate(4px,-4px); }
+    .btt {
+      position:fixed; bottom:24px; right:24px; width:40px; height:40px;
+      border-radius:50%; background:var(--accent-dark); color:#fff; border:none;
+      font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+      opacity:0; transform:translateY(10px); transition:opacity .3s, transform .3s;
+      box-shadow:0 2px 8px rgba(0,0,0,.2); z-index:99;
+    }
+    .btt.show { opacity:1; transform:translateY(0); }
+    .btt:hover { background:var(--accent); }
+    @media(max-width:520px){
+      nav ul {
+        display:none; position:absolute; top:56px; left:0; right:0;
+        background:var(--accent-dark); flex-direction:column; padding:12px 5% 16px; gap:12px;
+        box-shadow:0 4px 12px rgba(0,0,0,.3);
+      }
+      nav ul.open { display:flex; }
+      .hamburger { display:flex; }
+    }
 
     /* ── HERO ── */
     .hero {
@@ -115,6 +167,15 @@
     .concept ul { list-style:none; display:flex; flex-direction:column; gap:7px; }
     .concept li { font-size:.82rem; color:var(--mid); padding-left:14px; position:relative; line-height:1.55; }
     .concept li::before { content:'›'; position:absolute; left:0; color:var(--accent); font-weight:700; }
+
+    /* ── FOOTER ── */
+    footer { background: var(--dark); color: rgba(255,255,255,.5); text-align: center; padding: 24px 5%; font-size: .78rem; }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── SCROLL ANIMATIONS ── */
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
   </style>
 </head>
 <body>
@@ -122,12 +183,20 @@
 <!-- NAV -->
 <nav>
   <a class="logo" href="index.html">epsiCTRON</a>
-  <ul>
+  <ul id="nav-menu">
     <li><a href="index.html">Home</a></li>
-    <li><a href="about.html">About</a></li>
     <li><a href="resume.html">Resume</a></li>
+    <li><a href="breathe.html">Breathe</a></li>
   </ul>
+  <div class="nav-right">
+    <button class="theme-btn" id="theme-toggle" aria-label="Toggle dark mode">&#9790;</button>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
 </nav>
+
+<button class="btt" id="btt" aria-label="Back to top">&#8593;</button>
 
 <!-- HERO -->
 <section class="hero">
@@ -219,7 +288,7 @@
   </div>
 
   <!-- Key Concepts -->
-  <div class="concept">
+  <div class="concept fade-in">
     <h3>Key Concepts</h3>
     <ul>
       <li><strong>Frequency Resolution Δf = 1/(N·Ts)</strong> — the spacing between DFT bins equals the reciprocal of the total record length. More samples → finer resolution.</li>
@@ -314,7 +383,7 @@ function magnitudeDB(re, im, K) {
     const freq = k * fs / noDFT;
     const mag  = Math.sqrt(re[k] * re[k] + im[k] * im[k]);
     const db   = mag > 0 ? 20 * Math.log10(mag) : -120;
-    pts.push({ x: freq, y: Math.max(-80, db) });
+    pts.push({ x: freq, y: Math.max(-80, Math.min(40, db)) });
   }
   return pts;
 }
@@ -494,7 +563,7 @@ function render() {
     { pts: fPts2, xKey: 'x', yKey: 'y', color: C2 },
     { pts: fPts3, xKey: 'x', yKey: 'y', color: C3, lw: 2.2 },
   ], {
-    xMin: 0, xMax: fMax, yMin: -80, yMax: 10,
+    xMin: 0, xMax: fMax, yMin: -80, yMax: 40,
     xStep: 1, yStep: 20,
     xLabel: 'Frequency (Hz)', yLabel: 'Magnitude (dB)',
     xDec: 0, yDec: 0,
@@ -520,6 +589,39 @@ function setWindow(type) {
 });
 window.addEventListener('resize', render);
 document.fonts.ready.then(render);
+
+// Scroll animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Dark mode
+const themeBtn = document.getElementById('theme-toggle');
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  themeBtn.innerHTML = t === 'dark' ? '&#9788;' : '&#9790;';
+  localStorage.setItem('theme', t);
+}
+themeBtn.addEventListener('click', () => {
+  setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+if (localStorage.getItem('theme') === 'dark') setTheme('dark');
+
+const hamburger = document.getElementById('hamburger');
+const navMenu = document.getElementById('nav-menu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  navMenu.classList.toggle('open');
+});
+
+const btt = document.getElementById('btt');
+window.addEventListener('scroll', () => { btt.classList.toggle('show', window.scrollY > 300); });
+btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 </script>
+
+<footer>
+  Built by Kishor KS · <a href="index.html">Home</a> · <a href="resume.html">Resume</a>
+</footer>
 </body>
 </html>

@@ -3,6 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Resume of Kishor KS – Senior ML/DSP Engineer with 6+ years at NVIDIA, Honeywell. M.Tech IIT Hyderabad. Speech, Radar, Deep Learning.">
+  <meta property="og:title" content="Kishor KS – Resume">
+  <meta property="og:description" content="Senior ML/DSP Engineer. 6+ years at NVIDIA, Honeywell. Speech processing, FMCW Radar, Deep Learning.">
+  <meta property="og:type" content="profile">
+  <meta property="og:url" content="https://epsictron.github.io/resume.html">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>~</text></svg>">
   <title>Kishor KS – Resume</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -20,12 +27,24 @@
       --bg: #f8fafc;
       --white: #ffffff;
     }
+    [data-theme="dark"] {
+      --dark:   #e2e8f0;
+      --mid:    #cbd5e1;
+      --muted:  #94a3b8;
+      --border: #334155;
+      --bg:     #0f172a;
+      --white:  #1e293b;
+      --accent-light: #1a3a36;
+    }
+    [data-theme="dark"] .pub-card { background: linear-gradient(135deg, #1a3a36 0%, #162a28 100%); border-color: #2d5a52; }
+    [data-theme="dark"] .int-tag { background: #334155; }
 
     body {
       font-family: 'Inter', sans-serif;
       background: var(--bg);
       color: var(--dark);
       line-height: 1.6;
+      transition: background .3s, color .3s;
     }
 
     /* ── NAV ── */
@@ -58,6 +77,38 @@
       transition: color .2s;
     }
     nav ul a:hover, nav ul a.active { color: #fff; }
+
+    /* NAV RIGHT */
+    .nav-right { display:flex; align-items:center; gap:16px; }
+    .theme-btn {
+      background:none; border:none; color:rgba(255,255,255,.8); cursor:pointer;
+      font-size:1.1rem; padding:4px; transition:color .2s; line-height:1;
+    }
+    .theme-btn:hover { color:#fff; }
+
+    /* HAMBURGER */
+    .hamburger {
+      display:none; background:none; border:none; cursor:pointer; padding:4px;
+      flex-direction:column; gap:4px;
+    }
+    .hamburger span {
+      display:block; width:20px; height:2px; background:#fff; border-radius:2px;
+      transition:transform .3s, opacity .3s;
+    }
+    .hamburger.active span:nth-child(1) { transform:rotate(45deg) translate(4px,4px); }
+    .hamburger.active span:nth-child(2) { opacity:0; }
+    .hamburger.active span:nth-child(3) { transform:rotate(-45deg) translate(4px,-4px); }
+
+    /* BACK TO TOP */
+    .btt {
+      position:fixed; bottom:24px; right:24px; width:40px; height:40px;
+      border-radius:50%; background:var(--accent-dark); color:#fff; border:none;
+      font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+      opacity:0; transform:translateY(10px); transition:opacity .3s, transform .3s;
+      box-shadow:0 2px 8px rgba(0,0,0,.2); z-index:99;
+    }
+    .btt.show { opacity:1; transform:translateY(0); }
+    .btt:hover { background:var(--accent); }
 
     /* ── HERO ── */
     .hero {
@@ -361,11 +412,53 @@
       border-radius: 100px;
     }
 
+    /* ── DEMO CARDS ── */
+    .demo-list { display:flex; flex-direction:column; gap:10px; }
+    .demo-card {
+      display:flex; align-items:center; gap:16px;
+      background:var(--bg); border:1px solid var(--border); border-radius:12px;
+      padding:14px 18px; text-decoration:none; color:inherit;
+      transition:all .2s;
+    }
+    .demo-card:hover { border-color:var(--accent); box-shadow:0 4px 14px rgba(0,137,123,.1); transform:translateY(-1px); }
+    .demo-num {
+      flex-shrink:0; width:36px; height:36px; border-radius:9px;
+      background:var(--accent-light); color:var(--accent-dark);
+      font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:.82rem;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .demo-body { flex:1; }
+    .demo-name { font-family:'Space Grotesk',sans-serif; font-size:.9rem; font-weight:700; color:var(--dark); margin-bottom:2px; }
+    .demo-desc { font-size:.78rem; color:var(--muted); line-height:1.5; }
+    .demo-arrow { color:var(--muted); font-size:1rem; transition:color .2s, transform .2s; }
+    .demo-card:hover .demo-arrow { color:var(--accent); transform:translateX(3px); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark); color: rgba(255,255,255,.5); text-align: center;
+      padding: 24px 5%; font-size: .78rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── SCROLL ANIMATIONS ── */
+    .fade-in {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .grid { grid-template-columns: 1fr; }
       .proj-grid { grid-template-columns: 1fr; }
-      nav ul { display: none; }
+      nav ul {
+        display:none; position:absolute; top:56px; left:0; right:0;
+        background:var(--accent-dark); flex-direction:column; padding:12px 5% 16px; gap:12px;
+        box-shadow:0 4px 12px rgba(0,0,0,.3);
+      }
+      nav ul.open { display:flex; }
+      .hamburger { display:flex; }
     }
   </style>
 </head>
@@ -374,18 +467,25 @@
   <!-- NAV -->
   <nav>
     <a href="index.html" class="logo">epsiCTRON</a>
-    <ul>
+    <ul id="nav-menu">
       <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
       <li><a href="resume.html" class="active">Resume</a></li>
       <li><a href="breathe.html">Breathe</a></li>
     </ul>
+    <div class="nav-right">
+      <button class="theme-btn" id="theme-toggle" aria-label="Toggle dark mode">&#9790;</button>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </nav>
+
+  <button class="btt" id="btt" aria-label="Back to top">&#8593;</button>
 
   <!-- HERO -->
   <section class="hero">
     <div class="hero-inner">
-      <h1>Kishor KS <span style="font-size:0.75em; color:#888;">(ಕಿಶೋರ್ ಕೆ.ಎಸ್.)</span></h1>
+      <h1>Kishor KS (ಕಿಶೋರ್ ಕೆ.ಎಸ್)</h1>
       <p class="subtitle">Senior ML / DSP Engineer &nbsp;·&nbsp; Speech &nbsp;·&nbsp; Radar &nbsp;·&nbsp; Signal Processing</p>
       <div class="hero-contacts">
         <a class="contact-chip" href="mailto:kishor13252@gmail.com">
@@ -412,7 +512,7 @@
       <aside class="sidebar">
 
         <!-- Education -->
-        <div class="card">
+        <div class="card fade-in">
           <div class="card-title"><i class="fas fa-graduation-cap"></i> Education</div>
           <div class="edu-item">
             <div class="edu-degree">M.Tech</div>
@@ -431,7 +531,7 @@
         </div>
 
         <!-- Technical Skills -->
-        <div class="card">
+        <div class="card fade-in">
           <div class="card-title"><i class="fas fa-code"></i> Technical Skills</div>
           <div class="skill-group">
             <div class="skill-label">Languages</div>
@@ -459,7 +559,7 @@
         </div>
 
         <!-- Interests -->
-        <div class="card">
+        <div class="card fade-in">
           <div class="card-title"><i class="fas fa-brain"></i> Interests</div>
           <div class="interest-tags">
             <span class="int-tag">Machine Learning</span>
@@ -470,7 +570,7 @@
         </div>
 
         <!-- Coursework -->
-        <div class="card">
+        <div class="card fade-in">
           <div class="card-title"><i class="fas fa-book-open"></i> Coursework</div>
           <div class="skill-tags">
             <span class="tag">Machine Learning</span>
@@ -487,7 +587,7 @@
       <main class="main">
 
         <!-- Experience -->
-        <div class="card">
+        <div class="card fade-in">
           <div class="section-hd"><i class="fas fa-briefcase"></i> Industry Experience <span style="color:var(--muted);font-weight:400;font-size:.9em;">6 Years</span></div>
           <div class="timeline">
             <div class="tl-item">
@@ -518,7 +618,7 @@
         </div>
 
         <!-- Projects -->
-        <div class="card">
+        <div class="card fade-in">
           <div class="section-hd"><i class="fas fa-layer-group"></i> Projects</div>
           <div class="proj-grid">
 
@@ -563,7 +663,7 @@
         </div>
 
         <!-- Publication -->
-        <div class="card">
+        <div class="card fade-in">
           <div class="section-hd"><i class="fas fa-newspaper"></i> Publication</div>
           <div class="pub-card">
             <div class="pub-icon"><i class="fas fa-file-alt"></i></div>
@@ -578,9 +678,73 @@
           </div>
         </div>
 
+        <!-- Interactive Demos -->
+        <div class="card fade-in">
+          <div class="section-hd"><i class="fas fa-chart-line"></i> Interactive DSP Demos</div>
+          <p style="font-size:.84rem;color:var(--mid);margin-bottom:16px;line-height:1.6;">Browser-based visualisations I built to share intuition behind signal processing concepts. Drag sliders, tweak parameters, and watch the maths come alive.</p>
+          <div class="demo-list">
+            <a href="frequency-resolution.html" class="demo-card">
+              <div class="demo-num">01</div>
+              <div class="demo-body">
+                <div class="demo-name">Frequency Resolution & Windowing</div>
+                <div class="demo-desc">See how observation length and window shape affect spectral leakage and frequency resolution.</div>
+              </div>
+              <span class="demo-arrow">&#8594;</span>
+            </a>
+            <a href="impulse-response.html" class="demo-card">
+              <div class="demo-num">02</div>
+              <div class="demo-body">
+                <div class="demo-name">Impulse Response & Convolution</div>
+                <div class="demo-desc">Watch how a first-order LTI system responds to rect and exponential inputs as duration approaches 0.</div>
+              </div>
+              <span class="demo-arrow">&#8594;</span>
+            </a>
+            <a href="pole-zero.html" class="demo-card">
+              <div class="demo-num">03</div>
+              <div class="demo-body">
+                <div class="demo-name">Pole-Zero Plot & Frequency Response</div>
+                <div class="demo-desc">Move zeros in the Z-plane and observe the resulting magnitude frequency response in real time.</div>
+              </div>
+              <span class="demo-arrow">&#8594;</span>
+            </a>
+          </div>
+        </div>
+
       </main>
     </div>
   </div>
 
+<footer>
+  Built by Kishor KS · <a href="https://github.com/epsictron/epsictron.github.io">Source on GitHub</a>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+const themeBtn = document.getElementById('theme-toggle');
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  themeBtn.innerHTML = t === 'dark' ? '&#9788;' : '&#9790;';
+  localStorage.setItem('theme', t);
+}
+themeBtn.addEventListener('click', () => {
+  setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+if (localStorage.getItem('theme') === 'dark') setTheme('dark');
+
+const hamburger = document.getElementById('hamburger');
+const navMenu = document.getElementById('nav-menu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  navMenu.classList.toggle('open');
+});
+
+const btt = document.getElementById('btt');
+window.addEventListener('scroll', () => { btt.classList.toggle('show', window.scrollY > 300); });
+btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+</script>
 </body>
 </html>
