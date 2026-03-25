@@ -3,6 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Kishor KS – Senior ML/DSP Engineer. Interactive signal processing demos, deep learning, speech processing, and FMCW radar.">
+  <meta property="og:title" content="epsiCTRON – Kishor KS">
+  <meta property="og:description" content="Where Fourier Meets Backpropagation. Interactive DSP demos, deep learning, and signal processing.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://epsictron.github.io/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:creator" content="@epsiCTRON">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>~</text></svg>">
   <title>epsiCTRON – Kishor KS</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <style>
@@ -18,7 +26,18 @@
       --bg:     #f8fafc;
       --white:  #ffffff;
     }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); line-height: 1.6; }
+    [data-theme="dark"] {
+      --dark:   #e2e8f0;
+      --mid:    #cbd5e1;
+      --muted:  #94a3b8;
+      --border: #334155;
+      --bg:     #0f172a;
+      --white:  #1e293b;
+      --accent-light: #1a3a36;
+    }
+    [data-theme="dark"] .about-card { background: linear-gradient(135deg, #1a3a36 0%, #162a28 100%); border-color: #2d5a52; }
+    [data-theme="dark"] .ptag { background: #1a3a36; border-color: #2d5a52; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); line-height: 1.6; transition: background .3s, color .3s; }
 
     /* NAV */
     nav {
@@ -32,18 +51,56 @@
     nav ul { list-style:none; display:flex; gap:24px; }
     nav ul a { color:rgba(255,255,255,.8); text-decoration:none; font-size:.88rem; font-weight:500; transition:color .2s; }
     nav ul a:hover, nav ul a.active { color:#fff; }
-    @media(max-width:520px){ nav ul { display:none; } }
+
+    /* NAV RIGHT */
+    .nav-right { display:flex; align-items:center; gap:16px; }
+    .theme-btn {
+      background:none; border:none; color:rgba(255,255,255,.8); cursor:pointer;
+      font-size:1.1rem; padding:4px; transition:color .2s; line-height:1;
+    }
+    .theme-btn:hover { color:#fff; }
+
+    /* HAMBURGER */
+    .hamburger {
+      display:none; background:none; border:none; cursor:pointer; padding:4px;
+      flex-direction:column; gap:4px;
+    }
+    .hamburger span {
+      display:block; width:20px; height:2px; background:#fff; border-radius:2px;
+      transition:transform .3s, opacity .3s;
+    }
+    .hamburger.active span:nth-child(1) { transform:rotate(45deg) translate(4px,4px); }
+    .hamburger.active span:nth-child(2) { opacity:0; }
+    .hamburger.active span:nth-child(3) { transform:rotate(-45deg) translate(4px,-4px); }
+
+    @media(max-width:520px){
+      nav ul {
+        display:none; position:absolute; top:56px; left:0; right:0;
+        background:var(--accent-dark); flex-direction:column; padding:12px 5% 16px; gap:12px;
+        box-shadow:0 4px 12px rgba(0,0,0,.3);
+      }
+      nav ul.open { display:flex; }
+      .hamburger { display:flex; }
+    }
+
+    /* BACK TO TOP */
+    .btt {
+      position:fixed; bottom:24px; right:24px; width:40px; height:40px;
+      border-radius:50%; background:var(--accent-dark); color:#fff; border:none;
+      font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+      opacity:0; transform:translateY(10px); transition:opacity .3s, transform .3s;
+      box-shadow:0 2px 8px rgba(0,0,0,.2); z-index:99;
+    }
+    .btt.show { opacity:1; transform:translateY(0); }
+    .btt:hover { background:var(--accent); }
 
     /* HERO */
     .hero {
       background: linear-gradient(135deg, var(--accent-dark) 0%, #00695c 100%);
-      color:#fff; padding:64px 5% 56px; position:relative; overflow:hidden;
-      min-height: 280px;
+      color:#fff; padding:56px 5% 48px; position:relative; overflow:hidden;
     }
-    #hero-canvas {
-      position: absolute; inset: 0; width: 100%; height: 100%;
-      opacity: 0.18; pointer-events: none;
-    }
+    .hero::before { content:''; position:absolute; right:-40px; top:-60px; width:320px; height:320px; border-radius:50%; background:rgba(255,255,255,.04); }
+    .hero::after  { content:''; position:absolute; right:80px; bottom:-100px; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,.06); }
     .hero-inner { max-width:760px; margin:auto; position:relative; z-index:1; }
     .hero-tag { display:inline-block; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.25); border-radius:100px; padding:3px 14px; font-size:.7rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:16px; }
     .hero h1 { font-family:'Space Grotesk',sans-serif; font-size:clamp(1.8rem,5vw,2.8rem); font-weight:700; line-height:1.15; margin-bottom:12px; }
@@ -54,26 +111,6 @@
     .btn-white:hover { background:var(--accent-light); }
     .btn-outline { background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,.5); }
     .btn-outline:hover { background:rgba(255,255,255,.1); border-color:#fff; }
-
-    /* STATS STRIP */
-    .stats-strip {
-      background: var(--white);
-      border-bottom: 1px solid var(--border);
-      display: flex; justify-content: center; flex-wrap: wrap;
-      gap: 0;
-    }
-    .stat {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 20px 36px; text-align: center;
-      border-right: 1px solid var(--border);
-    }
-    .stat:last-child { border-right: none; }
-    .stat-num {
-      font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700;
-      color: var(--accent-dark); line-height: 1;
-    }
-    .stat-label { font-size: .72rem; color: var(--muted); font-weight: 500; margin-top: 4px; letter-spacing: .3px; }
-    @media(max-width:600px){ .stat { padding: 16px 20px; } .stat-num { font-size: 1.2rem; } }
 
     /* PAGE */
     .page { max-width:900px; margin:0 auto; padding:40px 5% 64px; }
@@ -86,35 +123,10 @@
     }
     .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
 
-    /* DEMO CARDS */
-    .demos { display:flex; flex-direction:column; gap:12px; margin-bottom:48px; }
-    .demo-card {
-      display:flex; align-items:center; gap:20px;
-      background:var(--white); border:1px solid var(--border); border-radius:14px;
-      padding:14px 22px 14px 14px; text-decoration:none; color:inherit;
-      box-shadow:0 1px 3px rgba(0,0,0,.06); transition:all .2s;
-    }
-    .demo-card:hover { border-color:var(--accent); box-shadow:0 4px 16px rgba(0,137,123,.12); transform:translateY(-1px); }
-    .demo-preview {
-      flex-shrink: 0; width: 96px; height: 60px; border-radius: 8px;
-      background: var(--accent-dark); display: block;
-    }
-    .demo-info { flex:1; }
-    .demo-num-badge {
-      display: inline-block;
-      background: var(--accent-light); color: var(--accent-dark);
-      font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:.65rem;
-      padding: 2px 8px; border-radius: 100px; margin-bottom: 4px; letter-spacing: .5px;
-    }
-    .demo-info h3 { font-family:'Space Grotesk',sans-serif; font-size:.98rem; font-weight:700; color:var(--dark); margin-bottom:2px; }
-    .demo-info p { font-size:.8rem; color:var(--muted); }
-    .demo-arrow { color:var(--muted); font-size:1.1rem; transition:color .2s, transform .2s; flex-shrink:0; }
-    .demo-card:hover .demo-arrow { color:var(--accent); transform:translateX(3px); }
-
     /* ABOUT STRIP */
     .about-card {
       background: linear-gradient(135deg, var(--accent-light) 0%, #f0faf9 100%);
-      border:1px solid #b2dfdb; border-radius:14px; padding:28px;
+      border:1px solid #b2dfdb; border-radius:14px; padding:28px 28px;
       display:flex; gap:24px; align-items:flex-start;
     }
     @media(max-width:540px){ .about-card { flex-direction:column; } }
@@ -130,85 +142,166 @@
     .about-links { margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; }
     .chip { display:inline-flex; align-items:center; gap:5px; background:#fff; border:1px solid var(--border); border-radius:100px; padding:4px 12px; font-size:.75rem; font-weight:500; color:var(--mid); text-decoration:none; transition:all .2s; }
     .chip:hover { border-color:var(--accent); color:var(--accent); }
+
+    /* FOOTER */
+    footer {
+      background: var(--dark); color: rgba(255,255,255,.5); text-align: center;
+      padding: 24px 5%; font-size: .78rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* SCROLL ANIMATIONS */
+    .fade-in {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* PASSION GRID */
+    .passion-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:48px; }
+    @media(max-width:640px){ .passion-grid { grid-template-columns:1fr; } }
+    .passion-card {
+      background:var(--white); border:1px solid var(--border); border-radius:14px;
+      padding:24px 24px 20px; box-shadow:0 1px 3px rgba(0,0,0,.06);
+      transition:all .2s;
+    }
+    .passion-card:hover { border-color:var(--accent); box-shadow:0 4px 16px rgba(0,137,123,.12); transform:translateY(-2px); }
+    .passion-card-wide { grid-column:1/-1; }
+    .passion-icon {
+      width:44px; height:44px; border-radius:12px;
+      background:var(--accent-light); color:var(--accent-dark);
+      font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.3rem;
+      display:flex; align-items:center; justify-content:center; margin-bottom:14px;
+    }
+    .passion-card h3 { font-family:'Space Grotesk',sans-serif; font-size:1.05rem; font-weight:700; color:var(--dark); margin-bottom:8px; }
+    .passion-card p { font-size:.84rem; color:var(--mid); line-height:1.65; margin-bottom:14px; }
+    .passion-tags { display:flex; flex-wrap:wrap; gap:6px; }
+    .ptag {
+      background:var(--accent-light); color:var(--accent-dark); font-size:.75rem; font-weight:600;
+      padding:4px 10px; border-radius:100px; border:1px solid #b2dfdb;
+    }
+
+    /* PHILOSOPHY CARD */
+    .philosophy-card {
+      background: var(--white); border:1px solid var(--border); border-radius:14px;
+      padding:32px 32px 28px; margin-bottom:48px;
+      box-shadow:0 1px 3px rgba(0,0,0,.06); position:relative; overflow:hidden;
+    }
+    .philosophy-card::before {
+      content:''; position:absolute; left:0; top:0; bottom:0; width:4px;
+      background:linear-gradient(180deg, var(--accent) 0%, var(--accent-dark) 100%);
+    }
+    [data-theme="dark"] .philosophy-card { background:#1e293b; }
+    .philosophy-card blockquote {
+      font-family:'Space Grotesk',sans-serif; font-size:clamp(1rem,2.5vw,1.2rem);
+      font-weight:600; color:var(--dark); line-height:1.55; margin-bottom:16px;
+    }
+    .philosophy-card blockquote em { color:var(--accent-dark); font-style:normal; }
+    .philosophy-card .philosophy-body { font-size:.85rem; color:var(--mid); line-height:1.75; }
+    .philosophy-card .philosophy-body + .philosophy-body { margin-top:10px; }
   </style>
 </head>
 <body>
 
 <nav>
   <a class="logo" href="index.html">epsiCTRON</a>
-  <ul>
+  <ul id="nav-menu">
     <li><a href="index.html" class="active">Home</a></li>
-    <li><a href="about.html">About</a></li>
     <li><a href="resume.html">Resume</a></li>
     <li><a href="breathe.html">Breathe</a></li>
   </ul>
+  <div class="nav-right">
+    <button class="theme-btn" id="theme-toggle" aria-label="Toggle dark mode">&#9790;</button>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
 </nav>
 
+<button class="btt" id="btt" aria-label="Back to top">&#8593;</button>
+
 <section class="hero">
-  <canvas id="hero-canvas"></canvas>
   <div class="hero-inner">
-    <div class="hero-tag">Signal Processing</div>
-    <h1>Interactive DSP<br>Visualisations</h1>
-    <p>Explore fundamental concepts in digital signal processing through interactive, browser-based visualisations. Drag sliders, change parameters, and build intuition.</p>
+    <div class="hero-tag">Signal Processing · Deep Learning</div>
+    <h1>Where Fourier Meets<br>Backpropagation</h1>
+    <p>I'm Kishor KS — a signal processing and deep learning enthusiast. I live at the intersection of spectral analysis, radar waveforms, speech processing, and neural networks. This is my corner of the internet where DSP intuition meets deep learning magic.</p>
     <div class="hero-links">
       <a href="resume.html" class="btn btn-white">View Resume</a>
-      <a href="about.html" class="btn btn-outline">About Me</a>
     </div>
   </div>
 </section>
 
-<!-- Stats strip -->
-<div class="stats-strip">
-  <div class="stat"><div class="stat-num">3</div><div class="stat-label">Interactive Demos</div></div>
-  <div class="stat"><div class="stat-num">6</div><div class="stat-label">Years Industry Exp.</div></div>
-  <div class="stat"><div class="stat-num">M.Tech</div><div class="stat-label">IIT Hyderabad</div></div>
-  <div class="stat"><div class="stat-num">1</div><div class="stat-label">Publication</div></div>
-</div>
-
 <div class="page">
 
-  <div class="section-title">Demonstrations</div>
+  <div class="section-title fade-in">What Excites Me</div>
 
-  <div class="demos">
-    <a href="FrequencyRes.html" class="demo-card">
-      <canvas class="demo-preview" id="prev1"></canvas>
-      <div class="demo-info">
-        <div class="demo-num-badge">01 · Spectral Analysis</div>
-        <h3>Frequency Resolution &amp; Windowing</h3>
-        <p>See how observation length and window shape affect spectral leakage and frequency resolution.</p>
+  <div class="passion-grid">
+    <div class="passion-card fade-in">
+      <div class="passion-icon">~</div>
+      <h3>Signal Processing</h3>
+      <p>From the elegance of the Fourier Transform to adaptive filtering and FMCW radar — I love how signals reveal hidden structure. Spectral leakage, windowing, beamforming — it never gets old.</p>
+      <div class="passion-tags">
+        <span class="ptag">FFT / DFT</span>
+        <span class="ptag">FMCW Radar</span>
+        <span class="ptag">Adaptive Filters</span>
+        <span class="ptag">Speech</span>
       </div>
-      <span class="demo-arrow">→</span>
-    </a>
-    <a href="impulseRes.html" class="demo-card">
-      <canvas class="demo-preview" id="prev2"></canvas>
-      <div class="demo-info">
-        <div class="demo-num-badge">02 · LTI Systems</div>
-        <h3>Impulse Response &amp; Convolution</h3>
-        <p>Watch how a first-order LTI system responds to rect and exponential inputs as duration → 0.</p>
+    </div>
+    <div class="passion-card fade-in">
+      <div class="passion-icon">&#x2207;</div>
+      <h3>Deep Learning</h3>
+      <p>Neural nets are the ultimate function approximators. I'm fascinated by how architectures like Conformers, LSTMs, and GANs learn representations that classical methods can't match — especially in speech and audio.</p>
+      <div class="passion-tags">
+        <span class="ptag">PyTorch</span>
+        <span class="ptag">Conformers</span>
+        <span class="ptag">Voice Conversion</span>
+        <span class="ptag">GANs</span>
       </div>
-      <span class="demo-arrow">→</span>
-    </a>
-    <a href="polezero.html" class="demo-card">
-      <canvas class="demo-preview" id="prev3"></canvas>
-      <div class="demo-info">
-        <div class="demo-num-badge">03 · Z-Plane</div>
-        <h3>Pole-Zero Plot &amp; Frequency Response</h3>
-        <p>Move zeros in the Z-plane and observe the resulting magnitude frequency response in real time.</p>
+    </div>
+    <div class="passion-card passion-card-wide fade-in">
+      <div class="passion-icon">&cap;</div>
+      <h3>The Sweet Spot</h3>
+      <p>The real magic happens when DSP and DL collide — phase-aware neural speech enhancement, learned spectral features for radar, CQT-domain source separation. Classical signal processing gives you the right inductive bias; deep learning fills in the gaps.</p>
+      <div class="passion-tags">
+        <span class="ptag">Speech Enhancement</span>
+        <span class="ptag">ICA + Neural Nets</span>
+        <span class="ptag">Learned Features</span>
+        <span class="ptag">Radar + ML</span>
       </div>
-      <span class="demo-arrow">→</span>
-    </a>
+    </div>
   </div>
 
-  <div class="section-title">About</div>
+  <div class="section-title fade-in" style="margin-top:8px;">My Take</div>
 
-  <div class="about-card">
+  <div class="philosophy-card fade-in">
+    <blockquote>
+      Deep learning is powerful — and keeps getting more so.<br>
+      But <em>signal processing is a classic</em>, and classics never go out of style.
+    </blockquote>
+    <p class="philosophy-body">
+      Over the past decade, deep learning has surged ahead — outpacing traditional signal processing on benchmark after benchmark, from speech recognition to radar classification. The raw empirical power is undeniable, and I find it genuinely exciting.
+    </p>
+    <p class="philosophy-body">
+      Yet I believe the classical toolkit — Fourier analysis, convolution, stationarity, noise models, filter design — isn't being replaced. It's becoming the <em>lens</em> through which we understand <em>why</em> neural networks work. Convolutions encode translation invariance the same way FIR filters do. Attention is a learned, data-driven correlation. Residual connections echo feedback in recursive systems.
+    </p>
+    <p class="philosophy-body">
+      Signal processing gives you the intuition; deep learning gives you the scale. Together, they're sharper than either alone.
+    </p>
+  </div>
+
+  <div class="section-title fade-in" style="margin-top:8px;">About</div>
+
+  <div class="about-card fade-in">
     <div class="about-avatar">KK</div>
     <div class="about-text">
       <h2>Kishor KS</h2>
-      <div class="role">Senior ML / DSP Engineer &nbsp;·&nbsp; Speech &nbsp;&amp;&nbsp; Radar Signal Processing</div>
-      <p>Previously at NVIDIA and Honeywell. M.Tech from IIT Hyderabad. These demos are personal explorations of DSP concepts — built to share the intuition behind the maths.</p>
+      <div class="role">Senior ML / DSP Engineer</div>
+      <p>M.Tech from IIT Hyderabad in Communication & Signal Processing. 6+ years building signal processing and deep learning systems at Nvidia, Honeywell, PathPartner, and Meeami. Published at INTERSPEECH 2018. I built this site to share interactive explorations of the concepts I love.</p>
       <div class="about-links">
         <a href="https://twitter.com/epsiCTRON" class="chip">Twitter / X</a>
+        <a href="https://github.com/epsictron" class="chip">GitHub</a>
+        <a href="https://linkedin.com/in/kishor-ks" class="chip">LinkedIn</a>
         <a href="resume.html" class="chip">Resume →</a>
       </div>
     </div>
@@ -216,199 +309,43 @@
 
 </div>
 
+<footer>
+  Built by Kishor KS · <a href="https://github.com/epsictron/epsictron.github.io">Source on GitHub</a>
+</footer>
+
 <script>
-/* ── Hero canvas: animated sine waves ── */
-(function() {
-  const cvs = document.getElementById('hero-canvas');
-  const ctx = cvs.getContext('2d');
-  let t = 0, raf;
+// Scroll animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-  function resize() {
-    cvs.width  = cvs.offsetWidth;
-    cvs.height = cvs.offsetHeight;
-  }
-  window.addEventListener('resize', resize);
-  resize();
+// Dark mode
+const themeBtn = document.getElementById('theme-toggle');
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  themeBtn.innerHTML = t === 'dark' ? '&#9788;' : '&#9790;';
+  localStorage.setItem('theme', t);
+}
+themeBtn.addEventListener('click', () => {
+  setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+if (localStorage.getItem('theme') === 'dark') setTheme('dark');
 
-  const waves = [
-    { amp: 0.18, freq: 1.2,  speed: 0.6,  phase: 0 },
-    { amp: 0.10, freq: 2.5,  speed: 1.0,  phase: 1.2 },
-    { amp: 0.07, freq: 4.1,  speed: 1.5,  phase: 2.4 },
-    { amp: 0.05, freq: 7.0,  speed: 0.9,  phase: 0.8 },
-  ];
+// Hamburger
+const hamburger = document.getElementById('hamburger');
+const navMenu = document.getElementById('nav-menu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  navMenu.classList.toggle('open');
+});
 
-  function draw() {
-    const W = cvs.width, H = cvs.height;
-    ctx.clearRect(0, 0, W, H);
-
-    waves.forEach((w, i) => {
-      ctx.beginPath();
-      ctx.strokeStyle = `rgba(255,255,255,${0.55 - i*0.1})`;
-      ctx.lineWidth = 1.5 - i*0.2;
-      for (let x = 0; x <= W; x += 2) {
-        const y = H/2 + H * w.amp * Math.sin(w.freq * (x/W) * Math.PI*2 + t * w.speed + w.phase);
-        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-    });
-
-    /* FFT-style bars at bottom */
-    const barCount = 48, barW = W / barCount;
-    for (let i = 0; i < barCount; i++) {
-      const h = H * 0.04 + H * 0.12 * Math.abs(Math.sin(i * 0.4 + t * 0.7)) * Math.abs(Math.sin(i * 0.15 + t * 0.3));
-      ctx.fillStyle = `rgba(255,255,255,${0.08 + 0.12 * (i/barCount)})`;
-      ctx.fillRect(i * barW + 1, H - h, barW - 2, h);
-    }
-
-    t += 0.015;
-    raf = requestAnimationFrame(draw);
-  }
-  draw();
-})();
-
-/* ── Mini preview: Demo 01 – Frequency spectrum ── */
-(function() {
-  const cvs = document.getElementById('prev1');
-  const ctx = cvs.getContext('2d');
-  let t = 0;
-  const W = 96, H = 60;
-  cvs.width = W; cvs.height = H;
-  const bars = 18;
-
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = '#004d40';
-    ctx.fillRect(0, 0, W, H);
-    const bw = W / bars;
-    for (let i = 0; i < bars; i++) {
-      const v = 0.15 + 0.7 * Math.pow(Math.abs(Math.sin(i * 0.7 + t) * Math.cos(i * 0.3 - t * 0.4)), 1.5);
-      const h = v * (H - 10);
-      const r = Math.floor(255 * (1 - v));
-      ctx.fillStyle = `rgb(${r},200,180)`;
-      ctx.fillRect(i * bw + 1, H - 5 - h, bw - 2, h);
-    }
-    /* x axis */
-    ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(0, H-5); ctx.lineTo(W, H-5); ctx.stroke();
-    t += 0.04;
-    requestAnimationFrame(draw);
-  }
-  draw();
-})();
-
-/* ── Mini preview: Demo 02 – Impulse / convolution ── */
-(function() {
-  const cvs = document.getElementById('prev2');
-  const ctx = cvs.getContext('2d');
-  let t = 0;
-  const W = 96, H = 60;
-  cvs.width = W; cvs.height = H;
-
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = '#004d40';
-    ctx.fillRect(0, 0, W, H);
-
-    /* animated impulse response h(t) = e^(-t) */
-    const C = 0.8 + 0.6 * Math.abs(Math.sin(t * 0.4));
-    ctx.beginPath();
-    ctx.strokeStyle = '#80cbc4'; ctx.lineWidth = 1.5;
-    for (let x = 0; x < W; x++) {
-      const tt = (x / W) * 5;
-      const y = H - 8 - (H - 16) * Math.exp(-tt / C);
-      x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    }
-    ctx.stroke();
-
-    /* output y(t) = convolution result */
-    ctx.beginPath();
-    ctx.strokeStyle = '#00e5cc'; ctx.lineWidth = 1.5; ctx.setLineDash([3,2]);
-    for (let x = 0; x < W; x++) {
-      const tt = (x / W) * 5;
-      const y = H - 8 - (H - 16) * (1 - Math.exp(-tt / C));
-      x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    }
-    ctx.stroke();
-    ctx.setLineDash([]);
-
-    ctx.strokeStyle = 'rgba(255,255,255,.2)'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(0, H-8); ctx.lineTo(W, H-8); ctx.stroke();
-
-    t += 0.02;
-    requestAnimationFrame(draw);
-  }
-  draw();
-})();
-
-/* ── Mini preview: Demo 03 – Pole-zero / unit circle ── */
-(function() {
-  const cvs = document.getElementById('prev3');
-  const ctx = cvs.getContext('2d');
-  let t = 0;
-  const W = 96, H = 60;
-  cvs.width = W; cvs.height = H;
-  const cx = W/2 - 4, cy = H/2, r = H * 0.38;
-
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = '#004d40';
-    ctx.fillRect(0, 0, W, H);
-
-    /* grid lines */
-    ctx.strokeStyle = 'rgba(255,255,255,.1)'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(W, cy); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, H); ctx.stroke();
-
-    /* unit circle */
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI*2);
-    ctx.strokeStyle = 'rgba(128,203,196,.5)'; ctx.lineWidth = 1;
-    ctx.stroke();
-
-    /* rotating zero pair */
-    const theta = 0.6 + 0.8 * Math.abs(Math.sin(t * 0.5));
-    const zx1 = cx + r * Math.cos(theta), zy1 = cy - r * Math.sin(theta);
-    const zx2 = cx + r * Math.cos(-theta), zy2 = cy - r * Math.sin(-theta);
-
-    ctx.strokeStyle = 'rgba(255,255,255,.2)'; ctx.lineWidth = 1; ctx.setLineDash([2,2]);
-    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(zx1, zy1); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(zx2, zy2); ctx.stroke();
-    ctx.setLineDash([]);
-
-    [[zx1,zy1],[zx2,zy2]].forEach(([x,y]) => {
-      ctx.beginPath();
-      ctx.arc(x, y, 4, 0, Math.PI*2);
-      ctx.strokeStyle = '#00e5cc'; ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(x-3.5, y-3.5); ctx.lineTo(x+3.5, y+3.5);
-      ctx.moveTo(x+3.5, y-3.5); ctx.lineTo(x-3.5, y+3.5);
-      ctx.strokeStyle = '#00e5cc'; ctx.lineWidth = 1.5;
-      ctx.stroke();
-    });
-
-    /* frequency response mini curve (right side) */
-    const fW = 26, fX = W - fW - 2;
-    ctx.beginPath();
-    ctx.strokeStyle = 'rgba(0,229,204,.7)'; ctx.lineWidth = 1.5;
-    for (let i = 0; i <= fW; i++) {
-      const w = (i / fW) * Math.PI;
-      const re = Math.cos(w) - Math.cos(theta);
-      const im = Math.sin(w) - Math.sin(theta);
-      const re2 = Math.cos(w) - Math.cos(-theta);
-      const im2 = Math.sin(w) - Math.sin(-theta);
-      const mag = Math.sqrt(re*re+im*im) * Math.sqrt(re2*re2+im2*im2);
-      const y = H - 4 - Math.min((H-8) * 0.5 * mag, H-8);
-      i === 0 ? ctx.moveTo(fX+i, y) : ctx.lineTo(fX+i, y);
-    }
-    ctx.stroke();
-
-    t += 0.025;
-    requestAnimationFrame(draw);
-  }
-  draw();
-})();
+// Back to top
+const btt = document.getElementById('btt');
+window.addEventListener('scroll', () => {
+  btt.classList.toggle('show', window.scrollY > 300);
+});
+btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 </script>
-
 </body>
 </html>
