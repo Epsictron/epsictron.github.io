@@ -181,6 +181,25 @@
       background:var(--accent-light); color:var(--accent-dark); font-size:.75rem; font-weight:600;
       padding:4px 10px; border-radius:100px; border:1px solid #b2dfdb;
     }
+
+    /* PHILOSOPHY CARD */
+    .philosophy-card {
+      background: var(--white); border:1px solid var(--border); border-radius:14px;
+      padding:32px 32px 28px; margin-bottom:48px;
+      box-shadow:0 1px 3px rgba(0,0,0,.06); position:relative; overflow:hidden;
+    }
+    .philosophy-card::before {
+      content:''; position:absolute; left:0; top:0; bottom:0; width:4px;
+      background:linear-gradient(180deg, var(--accent) 0%, var(--accent-dark) 100%);
+    }
+    [data-theme="dark"] .philosophy-card { background:#1e293b; }
+    .philosophy-card blockquote {
+      font-family:'Space Grotesk',sans-serif; font-size:clamp(1rem,2.5vw,1.2rem);
+      font-weight:600; color:var(--dark); line-height:1.55; margin-bottom:16px;
+    }
+    .philosophy-card blockquote em { color:var(--accent-dark); font-style:normal; }
+    .philosophy-card .philosophy-body { font-size:.85rem; color:var(--mid); line-height:1.75; }
+    .philosophy-card .philosophy-body + .philosophy-body { margin-top:10px; }
   </style>
 </head>
 <body>
@@ -253,7 +272,25 @@
     </div>
   </div>
 
-  <div class="section-title fade-in" style="margin-top:48px;">About</div>
+  <div class="section-title fade-in" style="margin-top:8px;">My Take</div>
+
+  <div class="philosophy-card fade-in">
+    <blockquote>
+      Deep learning is powerful — and keeps getting more so.<br>
+      But <em>signal processing is a classic</em>, and classics never go out of style.
+    </blockquote>
+    <p class="philosophy-body">
+      Over the past decade, deep learning has surged ahead — outpacing traditional signal processing on benchmark after benchmark, from speech recognition to radar classification. The raw empirical power is undeniable, and I find it genuinely exciting.
+    </p>
+    <p class="philosophy-body">
+      Yet I believe the classical toolkit — Fourier analysis, convolution, stationarity, noise models, filter design — isn't being replaced. It's becoming the <em>lens</em> through which we understand <em>why</em> neural networks work. Convolutions encode translation invariance the same way FIR filters do. Attention is a learned, data-driven correlation. Residual connections echo feedback in recursive systems.
+    </p>
+    <p class="philosophy-body">
+      Signal processing gives you the intuition; deep learning gives you the scale. Together, they're sharper than either alone.
+    </p>
+  </div>
+
+  <div class="section-title fade-in" style="margin-top:8px;">About</div>
 
   <div class="about-card fade-in">
     <div class="about-avatar">KK</div>
