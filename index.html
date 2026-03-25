@@ -209,20 +209,48 @@
     .philosophy-card .philosophy-body { font-size:.85rem; color:var(--mid); line-height:1.75; }
     .philosophy-card .philosophy-body + .philosophy-body { margin-top:10px; }
 
+    /* KANNADA CARD — flag-inspired (yellow top, red bottom) */
+    .passion-card-kannada {
+      background: linear-gradient(175deg, #fffbe6 0%, #fff7e0 45%, #fff0e8 60%, #fde8e0 100%);
+      border-color: #e8b84b;
+    }
+    .passion-card-kannada:hover {
+      border-color: #c0392b;
+      box-shadow: 0 4px 20px rgba(192,57,43,.15);
+    }
+    .passion-card-kannada .passion-icon {
+      background: #fff3cd; color: #8b1a1a;
+    }
+    .passion-card-kannada h3 { color: #5a1a00; }
+    .passion-card-kannada p  { color: #6b3020; }
+    .passion-card-kannada .ptag {
+      background: #fff3cd; color: #7a2d00; border-color: #e8b84b;
+    }
+    [data-theme="dark"] .passion-card-kannada {
+      background: linear-gradient(175deg, #2a2200 0%, #2a1a00 50%, #2a1008 100%);
+      border-color: #8b6914;
+    }
+    [data-theme="dark"] .passion-card-kannada:hover { border-color: #c0392b; }
+    [data-theme="dark"] .passion-card-kannada .passion-icon { background:#3a2a00; color:#f5c842; }
+    [data-theme="dark"] .passion-card-kannada h3 { color:#f5c842; }
+    [data-theme="dark"] .passion-card-kannada p  { color:#d4a88a; }
+    [data-theme="dark"] .passion-card-kannada .ptag { background:#3a1800; color:#f5c842; border-color:#8b3a00; }
+
     /* KANNADA VACHANA QUOTE (inside card) */
     .kannada-vachana {
       display:flex; flex-direction:column; gap:3px;
-      border-left:3px solid var(--accent); padding-left:12px;
+      border-left:3px solid #c0392b; padding-left:12px;
       margin:12px 0 14px;
     }
     .kannada-vachana-text {
       font-family:'Noto Sans Kannada', sans-serif; font-size:1.1rem; font-weight:600;
-      color:var(--accent-dark); line-height:1.5;
+      color:#7a0000; line-height:1.5;
     }
-    [data-theme="dark"] .kannada-vachana-text { color:var(--accent); }
+    [data-theme="dark"] .kannada-vachana-text { color:#f5c842; }
     .kannada-vachana-meta {
-      font-size:.75rem; color:var(--muted); font-style:italic;
+      font-size:.75rem; color:#a05030; font-style:italic;
     }
+    [data-theme="dark"] .kannada-vachana-meta { color:#c4956a; }
   </style>
 </head>
 <body>
@@ -284,7 +312,7 @@
         <span class="ptag">GANs</span>
       </div>
     </div>
-    <div class="passion-card passion-card-wide fade-in">
+    <div class="passion-card passion-card-wide passion-card-kannada fade-in">
       <div class="passion-icon" style="font-family:'Noto Sans Kannada',sans-serif;font-size:1.1rem;">ಕ</div>
       <h3>Kannada — ಕನ್ನಡ</h3>
       <p>Kannada is one of India's oldest classical languages, with a literary tradition spanning over 2,000 years. From the poetry of Pampa to the philosophy of Basavanna's Vachanas, its script and sound carry a depth that never ceases to move me. A language that shaped a civilization.</p>
