@@ -37,7 +37,7 @@
     }
     [data-theme="dark"] .about-card { background: linear-gradient(135deg, #1a3a36 0%, #162a28 100%); border-color: #2d5a52; }
     [data-theme="dark"] .ptag { background: #1a3a36; border-color: #2d5a52; }
-    html { background: var(--bg); transition: background .3s; }
+    html { background: var(--bg); transition: background .3s; scroll-behavior: smooth; }
     body { font-family: 'Inter', sans-serif; background: transparent; color: var(--dark); line-height: 1.6; transition: color .3s; }
 
     /* BACKGROUND CANVAS */
@@ -57,8 +57,10 @@
     }
     nav .logo { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.1rem; color:#fff; text-decoration:none; letter-spacing:1px; }
     nav ul { list-style:none; display:flex; gap:24px; }
-    nav ul a { color:rgba(255,255,255,.8); text-decoration:none; font-size:.88rem; font-weight:500; transition:color .2s; }
-    nav ul a:hover, nav ul a.active { color:#fff; }
+    nav ul a { color:rgba(255,255,255,.8); text-decoration:none; font-size:.88rem; font-weight:500; transition:color .2s; position:relative; }
+    nav ul a:hover { color:#fff; }
+    nav ul a.active { color:#fff; }
+    nav ul a.active::after { content:''; position:absolute; bottom:-3px; left:0; right:0; height:2px; background:rgba(255,255,255,.75); border-radius:1px; }
 
     /* NAV RIGHT */
     .nav-right { display:flex; align-items:center; gap:16px; }
@@ -307,10 +309,41 @@
       transition:background .2s, transform .2s;
     }
     .btn-breathe:hover { background:var(--accent-light); transform:translateY(-2px); }
+
+    /* SCROLL PROGRESS */
+    #scroll-progress {
+      position:fixed; top:0; left:0; height:3px; width:0%;
+      background:linear-gradient(90deg, var(--accent) 0%, #26c6da 100%);
+      z-index:200; pointer-events:none;
+    }
+
+    /* ABOUT STACK */
+    .about-stack { margin-top:10px; display:flex; flex-wrap:wrap; gap:6px; }
+
+    /* DEMOS STRIP */
+    .demos-strip { display:flex; flex-direction:column; gap:10px; margin-bottom:48px; }
+    .demo-strip-card {
+      display:flex; align-items:center; gap:16px;
+      background:var(--white); border:1px solid var(--border); border-radius:12px;
+      padding:14px 18px; text-decoration:none; color:inherit; transition:all .2s;
+    }
+    .demo-strip-card:hover { border-color:var(--accent); box-shadow:0 4px 14px rgba(0,137,123,.1); transform:translateY(-1px); }
+    .demo-strip-num {
+      flex-shrink:0; width:36px; height:36px; border-radius:9px;
+      background:var(--accent-light); color:var(--accent-dark);
+      font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:.82rem;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .demo-strip-body { flex:1; }
+    .demo-strip-name { font-family:'Space Grotesk',sans-serif; font-size:.9rem; font-weight:700; color:var(--dark); margin-bottom:2px; }
+    .demo-strip-desc { font-size:.78rem; color:var(--muted); line-height:1.5; }
+    .demo-strip-arrow { color:var(--muted); font-size:1rem; transition:color .2s, transform .2s; }
+    .demo-strip-card:hover .demo-strip-arrow { color:var(--accent); transform:translateX(3px); }
   </style>
 </head>
 <body>
 
+<div id="scroll-progress" aria-hidden="true"></div>
 <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
 <nav>
@@ -318,6 +351,7 @@
   <ul id="nav-menu">
     <li><a href="index.html" class="active">Home</a></li>
     <li><a href="resume.html">Resume</a></li>
+    <li><a href="#demos">Demos</a></li>
     <li><a href="breathe.html">Breathe</a></li>
   </ul>
   <div class="nav-right">
@@ -337,6 +371,7 @@
     <p>I'm Kishor KS — a signal processing and deep learning enthusiast. I live at the intersection of spectral analysis, radar waveforms, speech processing, and neural networks. This is my corner of the internet where DSP intuition meets deep learning magic.</p>
     <div class="hero-links">
       <a href="resume.html" class="btn btn-white">View Resume</a>
+      <a href="#demos" class="btn btn-outline">Explore Demos &#8594;</a>
     </div>
   </div>
 </section>
@@ -429,7 +464,45 @@
         <a href="https://www.linkedin.com/in/kishor-ks52" class="chip">LinkedIn</a>
         <a href="resume.html" class="chip">Resume →</a>
       </div>
+      <div class="about-stack">
+        <span class="ptag">Python</span>
+        <span class="ptag">PyTorch</span>
+        <span class="ptag">NumPy / SciPy</span>
+        <span class="ptag">MATLAB</span>
+        <span class="ptag">C</span>
+      </div>
     </div>
+  </div>
+
+  <div id="demos" class="section-title fade-in" style="margin-top:48px;">Interactive Demos</div>
+
+  <p class="fade-in" style="font-size:.84rem;color:var(--mid);line-height:1.7;margin-bottom:16px;">Browser-based visualisations of signal processing concepts. Drag sliders, tweak parameters — watch the maths come alive.</p>
+
+  <div class="demos-strip fade-in">
+    <a href="frequency-resolution.html" class="demo-strip-card">
+      <div class="demo-strip-num">01</div>
+      <div class="demo-strip-body">
+        <div class="demo-strip-name">Frequency Resolution &amp; Windowing</div>
+        <div class="demo-strip-desc">See how observation length and window shape affect spectral leakage and frequency resolution.</div>
+      </div>
+      <span class="demo-strip-arrow">&#8594;</span>
+    </a>
+    <a href="impulse-response.html" class="demo-strip-card">
+      <div class="demo-strip-num">02</div>
+      <div class="demo-strip-body">
+        <div class="demo-strip-name">Impulse Response &amp; Convolution</div>
+        <div class="demo-strip-desc">Watch how a first-order LTI system responds to rect and exponential inputs as duration approaches&nbsp;0.</div>
+      </div>
+      <span class="demo-strip-arrow">&#8594;</span>
+    </a>
+    <a href="pole-zero.html" class="demo-strip-card">
+      <div class="demo-strip-num">03</div>
+      <div class="demo-strip-body">
+        <div class="demo-strip-name">Pole-Zero Plot &amp; Frequency Response</div>
+        <div class="demo-strip-desc">Move zeros in the Z-plane and observe the resulting magnitude frequency response in real time.</div>
+      </div>
+      <span class="demo-strip-arrow">&#8594;</span>
+    </a>
   </div>
 
   <div class="section-title fade-in" style="margin-top:48px;">Breathe</div>
@@ -481,7 +554,7 @@
 </div>
 
 <footer>
-  Built by Kishor KS · <a href="https://github.com/epsictron/epsictron.github.io">Source on GitHub</a>
+  Built by Kishor KS · <a href="https://github.com/epsictron/epsictron.github.io">Source on GitHub</a> · <span id="footer-year"></span>
 </footer>
 
 <script>
@@ -511,12 +584,18 @@ hamburger.addEventListener('click', () => {
   navMenu.classList.toggle('open');
 });
 
-// Back to top
+// Back to top + scroll progress
 const btt = document.getElementById('btt');
+const sp  = document.getElementById('scroll-progress');
 window.addEventListener('scroll', () => {
   btt.classList.toggle('show', window.scrollY > 300);
-});
+  const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+  sp.style.width = Math.min(pct, 100) + '%';
+}, { passive: true });
 btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+// Footer year
+document.getElementById('footer-year').textContent = new Date().getFullYear();
 
 // Background: neural-net nodes + signal waveforms
 (function () {

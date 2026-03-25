@@ -39,6 +39,7 @@
     [data-theme="dark"] .pub-card { background: linear-gradient(135deg, #1a3a36 0%, #162a28 100%); border-color: #2d5a52; }
     [data-theme="dark"] .int-tag { background: #334155; }
 
+    html { scroll-behavior: smooth; }
     body {
       font-family: 'Inter', sans-serif;
       background: var(--bg);
@@ -75,8 +76,14 @@
       font-size: 0.9rem;
       font-weight: 500;
       transition: color .2s;
+      position: relative;
     }
-    nav ul a:hover, nav ul a.active { color: #fff; }
+    nav ul a:hover { color: #fff; }
+    nav ul a.active { color: #fff; }
+    nav ul a.active::after {
+      content: ''; position: absolute; bottom: -3px; left: 0; right: 0;
+      height: 2px; background: rgba(255,255,255,.75); border-radius: 1px;
+    }
 
     /* NAV RIGHT */
     .nav-right { display:flex; align-items:center; gap:16px; }
@@ -433,6 +440,13 @@
     .demo-arrow { color:var(--muted); font-size:1rem; transition:color .2s, transform .2s; }
     .demo-card:hover .demo-arrow { color:var(--accent); transform:translateX(3px); }
 
+    /* SCROLL PROGRESS */
+    #scroll-progress {
+      position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent) 0%, #26c6da 100%);
+      z-index: 200; pointer-events: none;
+    }
+
     /* ── FOOTER ── */
     footer {
       background: var(--dark); color: rgba(255,255,255,.5); text-align: center;
@@ -464,12 +478,15 @@
 </head>
 <body>
 
+  <div id="scroll-progress" aria-hidden="true"></div>
+
   <!-- NAV -->
   <nav>
     <a href="index.html" class="logo">epsiCTRON</a>
     <ul id="nav-menu">
       <li><a href="index.html">Home</a></li>
       <li><a href="resume.html" class="active">Resume</a></li>
+      <li><a href="#demos">Demos</a></li>
       <li><a href="breathe.html">Breathe</a></li>
     </ul>
     <div class="nav-right">
@@ -676,7 +693,7 @@
         </div>
 
         <!-- Interactive Demos -->
-        <div class="card fade-in">
+        <div id="demos" class="card fade-in">
           <div class="section-hd"><i class="fas fa-chart-line"></i> Interactive DSP Demos</div>
           <p style="font-size:.84rem;color:var(--mid);margin-bottom:16px;line-height:1.6;">Browser-based visualisations I built to share intuition behind signal processing concepts. Drag sliders, tweak parameters, and watch the maths come alive.</p>
           <div class="demo-list">
@@ -712,7 +729,7 @@
   </div>
 
 <footer>
-  Built by Kishor KS · <a href="https://github.com/epsictron/epsictron.github.io">Source on GitHub</a>
+  Built by Kishor KS · <a href="https://github.com/epsictron/epsictron.github.io">Source on GitHub</a> · <span id="footer-year"></span>
 </footer>
 
 <script>
@@ -740,8 +757,15 @@ hamburger.addEventListener('click', () => {
 });
 
 const btt = document.getElementById('btt');
-window.addEventListener('scroll', () => { btt.classList.toggle('show', window.scrollY > 300); });
+const sp  = document.getElementById('scroll-progress');
+window.addEventListener('scroll', () => {
+  btt.classList.toggle('show', window.scrollY > 300);
+  const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+  sp.style.width = Math.min(pct, 100) + '%';
+}, { passive: true });
 btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+document.getElementById('footer-year').textContent = new Date().getFullYear();
 </script>
 </body>
 </html>
