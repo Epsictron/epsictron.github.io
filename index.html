@@ -251,6 +251,62 @@
       font-size:.75rem; color:#a05030; font-style:italic;
     }
     [data-theme="dark"] .kannada-vachana-meta { color:#c4956a; }
+
+    /* BREATHE SECTION */
+    .breathe-section {
+      display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:48px;
+    }
+    @media(max-width:640px){ .breathe-section { grid-template-columns:1fr; } }
+    .breathe-why {
+      background:var(--white); border:1px solid var(--border); border-radius:14px;
+      padding:28px; box-shadow:0 1px 3px rgba(0,0,0,.06);
+    }
+    .breathe-why h3 {
+      font-family:'Space Grotesk',sans-serif; font-size:1.05rem; font-weight:700;
+      color:var(--dark); margin-bottom:10px;
+    }
+    .breathe-why > p {
+      font-size:.84rem; color:var(--mid); line-height:1.7; margin-bottom:20px;
+    }
+    .breathe-points { display:flex; flex-direction:column; gap:14px; }
+    .breathe-point {
+      display:flex; gap:12px; align-items:flex-start;
+    }
+    .breathe-point-icon {
+      flex-shrink:0; width:28px; height:28px; border-radius:8px;
+      background:var(--accent-light); color:var(--accent-dark);
+      display:flex; align-items:center; justify-content:center; font-size:.7rem;
+    }
+    .breathe-point strong {
+      display:block; font-size:.85rem; color:var(--dark); font-weight:600; margin-bottom:2px;
+    }
+    .breathe-point span { font-size:.8rem; color:var(--mid); line-height:1.6; }
+    .breathe-cta {
+      background: linear-gradient(145deg, #004d40 0%, #00695c 60%, #00897b 100%);
+      border-radius:14px; display:flex; align-items:center; justify-content:center;
+      padding:32px; min-height:260px;
+    }
+    .breathe-cta-inner { text-align:center; }
+    @keyframes breathe-pulse {
+      0%,100% { transform:scale(1); opacity:.5; }
+      50% { transform:scale(1.18); opacity:.85; }
+    }
+    .breathe-orb {
+      width:72px; height:72px; border-radius:50%; margin:0 auto 20px;
+      background:rgba(255,255,255,.12); border:2px solid rgba(255,255,255,.25);
+      animation:breathe-pulse 4s ease-in-out infinite;
+    }
+    .breathe-cta-tagline {
+      font-size:.82rem; color:rgba(255,255,255,.7); margin-bottom:20px;
+      letter-spacing:.5px; line-height:1.6;
+    }
+    .btn-breathe {
+      display:inline-block; padding:11px 24px; border-radius:8px;
+      background:#fff; color:var(--accent-dark);
+      font-size:.85rem; font-weight:700; text-decoration:none;
+      transition:background .2s, transform .2s;
+    }
+    .btn-breathe:hover { background:var(--accent-light); transform:translateY(-2px); }
   </style>
 </head>
 <body>
@@ -372,6 +428,52 @@
         <a href="https://github.com/epsictron" class="chip">GitHub</a>
         <a href="https://www.linkedin.com/in/kishor-ks52" class="chip">LinkedIn</a>
         <a href="resume.html" class="chip">Resume →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title fade-in" style="margin-top:48px;">Breathe</div>
+
+  <div class="breathe-section fade-in">
+    <div class="breathe-why">
+      <h3>Why Breathing Matters</h3>
+      <p>Most of us breathe on autopilot — shallow, fast, chest-driven. But breathing is the only autonomic function you can consciously control, making it a direct dial into your nervous system.</p>
+      <div class="breathe-points">
+        <div class="breathe-point">
+          <div class="breathe-point-icon">&#9675;</div>
+          <div>
+            <strong>Calms the nervous system</strong>
+            <span>Slow, deep exhales activate the parasympathetic ("rest &amp; digest") branch, dialing down cortisol and heart rate.</span>
+          </div>
+        </div>
+        <div class="breathe-point">
+          <div class="breathe-point-icon">&#9651;</div>
+          <div>
+            <strong>Sharpens focus</strong>
+            <span>Controlled breathing synchronises neural oscillations in the prefrontal cortex — the region responsible for attention and decision-making.</span>
+          </div>
+        </div>
+        <div class="breathe-point">
+          <div class="breathe-point-icon">&#9632;</div>
+          <div>
+            <strong>Regulates emotions</strong>
+            <span>The breath is a two-way bridge between body and mind. Change the rhythm and you change the feeling — within seconds, not minutes.</span>
+          </div>
+        </div>
+        <div class="breathe-point">
+          <div class="breathe-point-icon">&#9670;</div>
+          <div>
+            <strong>Improves sleep &amp; recovery</strong>
+            <span>Even 5 minutes of diaphragmatic breathing before sleep reduces arousal and deepens slow-wave (restorative) sleep cycles.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="breathe-cta">
+      <div class="breathe-cta-inner">
+        <div class="breathe-orb" aria-hidden="true"></div>
+        <p class="breathe-cta-tagline">Pause. Inhale slowly. Sharp burst. Exhale.</p>
+        <a href="breathe.html" class="btn btn-breathe">Open Breathing Exercise &#8594;</a>
       </div>
     </div>
   </div>
