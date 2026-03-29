@@ -260,6 +260,15 @@
     </div>
 
     <div class="card plot-card">
+      <div class="card-title">Magnitude Spectrum |X(f)|</div>
+      <canvas id="c-spec" class="plot-canvas"></canvas>
+      <div class="legend">
+        <div class="leg"><div class="leg-line" style="background:#8b5cf6"></div>|X(f)|</div>
+        <div class="leg"><div class="leg-line" style="background:#ef4444;border-style:dashed"></div>f<sub>s</sub>/2 (Nyquist)</div>
+      </div>
+    </div>
+
+    <div class="card plot-card" style="grid-column:1/-1">
       <div class="card-title">Reconstructed Signal</div>
       <canvas id="c-recon" class="plot-canvas"></canvas>
       <div class="legend">
@@ -291,7 +300,8 @@
 const C_ORIG   = '#3b82f6';
 const C_SAMPLE = '#ef4444';
 const C_RECON  = '#10b981';
-const C_GHOST  = 'rgba(59,130,246,0.25)';
+const C_SPEC   = '#8b5cf6';
+const C_NYQ    = '#ef4444';
 
 const RENDER_PTS = 800; // points for continuous curves
 
@@ -347,6 +357,29 @@ function reconstructSignal(samples, fs, tMax) {
       val += samples[n].y * sinc((t - n * Ts) / Ts);
     }
     pts.push({ x: t, y: val });
+  }
+  return pts;
+}
+
+// ═══════════════════════════════════════════════════
+//  DFT for magnitude spectrum
+// ═══════════════════════════════════════════════════
+function computeMagnitudeSpectrum(samples, fs) {
+  const N    = samples.length;
+  const NFFT = 1024;
+  const pts  = [];
+  // only compute up to fs/2
+  const kMax = Math.floor(NFFT / 2);
+  for (let k = 0; k <= kMax; k++) {
+    let re = 0, im = 0;
+    for (let n = 0; n < N; n++) {
+      const angle = 2 * Math.PI * k * n / NFFT;
+      re += samples[n].y * Math.cos(angle);
+      im -= samples[n].y * Math.sin(angle);
+    }
+    const mag  = Math.sqrt(re * re + im * im) / N;
+    const freq = k * fs / NFFT;
+    pts.push({ x: freq, y: mag });
   }
   return pts;
 }
@@ -437,6 +470,18 @@ function drawChart(canvas, seriesList, dotSeries, cfg) {
     ctx.globalAlpha = 1;
   });
 
+  // draw vertical markers
+  if (cfg.vLines) {
+    cfg.vLines.forEach(({ x, color, dash }) => {
+      const px = mx(x);
+      ctx.strokeStyle = color;
+      ctx.lineWidth   = p(1.5);
+      ctx.setLineDash(dash ? dash.map(p) : [p(5), p(4)]);
+      ctx.beginPath(); ctx.moveTo(px, MT); ctx.lineTo(px, MT + PH); ctx.stroke();
+      ctx.setLineDash([]);
+    });
+  }
+
   // draw sample dots
   if (dotSeries) {
     dotSeries.forEach(({ pts, color, radius }) => {
@@ -482,6 +527,7 @@ function drawChart(canvas, seriesList, dotSeries, cfg) {
 //  Render
 // ═══════════════════════════════════════════════════
 const cvTime  = document.getElementById('c-time');
+const cvSpec  = document.getElementById('c-spec');
 const cvRecon = document.getElementById('c-recon');
 
 function render() {
@@ -537,6 +583,23 @@ function render() {
     xStep: tStep, yStep: yStep,
     xLabel: 'Time (s)', yLabel: 'Amplitude',
     xDec: 1, yDec: 1,
+  });
+
+  // ── Magnitude spectrum ──
+  const specPts   = computeMagnitudeSpectrum(samples, fs);
+  const fNyquist  = fs / 2;
+  const specMax   = Math.max(0.1, ...specPts.map(p => p.y)) * 1.15;
+  const fDispMax  = fNyquist * 1.2;
+  const fStep     = niceStep(fDispMax, 5);
+
+  drawChart(cvSpec, [
+    { pts: specPts, color: C_SPEC, lw: 2 },
+  ], null, {
+    xMin: 0, xMax: fDispMax, yMin: 0, yMax: specMax,
+    xStep: fStep, yStep: niceStep(specMax, 4),
+    xLabel: 'Frequency (Hz)', yLabel: 'Magnitude',
+    xDec: 1, yDec: 2,
+    vLines: [{ x: fNyquist, color: C_NYQ, dash: [5, 4] }],
   });
 
   // ── Reconstruction ──
