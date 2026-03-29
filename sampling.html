@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive sampling theorem demo – explore aliasing, Nyquist rate, and signal reconstruction with real-time visualizations.">
+  <meta property="og:title" content="Sampling & Reconstruction – epsiCTRON">
+  <meta property="og:description" content="Adjust the sampling rate and watch aliasing appear when you violate the Nyquist criterion.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://epsictron.github.io/sampling.html">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>~</text></svg>">
+  <title>Sampling & Reconstruction – epsiCTRON</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent:       #00897b;
+      --accent-dark:  #004d40;
+      --accent-light: #e0f2f1;
+      --dark:   #0f172a;
+      --mid:    #334155;
+      --muted:  #64748b;
+      --border: #e2e8f0;
+      --bg:     #f8fafc;
+      --white:  #ffffff;
+    }
+    [data-theme="dark"] {
+      --dark:   #e2e8f0;
+      --mid:    #cbd5e1;
+      --muted:  #94a3b8;
+      --border: #334155;
+      --bg:     #0f172a;
+      --white:  #1e293b;
+      --accent-light: #1a3a36;
+    }
+    [data-theme="dark"] .concept { background: linear-gradient(135deg, #1a3a36, #162a28); border-color: #2d5a52; }
+    [data-theme="dark"] .pill { background: #1a3a36; border-color: #2d5a52; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); line-height: 1.6; transition: background .3s, color .3s; }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--accent-dark);
+      padding: 0 5%;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px; position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    nav .logo { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.1rem; color:#fff; text-decoration:none; letter-spacing:1px; }
+    nav ul { list-style:none; display:flex; gap:24px; }
+    nav ul a { color:rgba(255,255,255,.8); text-decoration:none; font-size:.88rem; font-weight:500; transition:color .2s; }
+    nav ul a:hover { color:#fff; }
+    .nav-right { display:flex; align-items:center; gap:16px; }
+    .theme-btn {
+      background:none; border:none; color:rgba(255,255,255,.8); cursor:pointer;
+      font-size:1.1rem; padding:4px; transition:color .2s; line-height:1;
+    }
+    .theme-btn:hover { color:#fff; }
+    .hamburger {
+      display:none; background:none; border:none; cursor:pointer; padding:4px;
+      flex-direction:column; gap:4px;
+    }
+    .hamburger span {
+      display:block; width:20px; height:2px; background:#fff; border-radius:2px;
+      transition:transform .3s, opacity .3s;
+    }
+    .hamburger.active span:nth-child(1) { transform:rotate(45deg) translate(4px,4px); }
+    .hamburger.active span:nth-child(2) { opacity:0; }
+    .hamburger.active span:nth-child(3) { transform:rotate(-45deg) translate(4px,-4px); }
+    .btt {
+      position:fixed; bottom:24px; right:24px; width:40px; height:40px;
+      border-radius:50%; background:var(--accent-dark); color:#fff; border:none;
+      font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+      opacity:0; transform:translateY(10px); transition:opacity .3s, transform .3s;
+      box-shadow:0 2px 8px rgba(0,0,0,.2); z-index:99;
+    }
+    .btt.show { opacity:1; transform:translateY(0); }
+    .btt:hover { background:var(--accent); }
+    @media(max-width:520px){
+      nav ul {
+        display:none; position:absolute; top:56px; left:0; right:0;
+        background:var(--accent-dark); flex-direction:column; padding:12px 5% 16px; gap:12px;
+        box-shadow:0 4px 12px rgba(0,0,0,.3);
+      }
+      nav ul.open { display:flex; }
+      .hamburger { display:flex; }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--accent-dark) 0%, #00695c 100%);
+      color:#fff; padding:36px 5% 32px; position:relative; overflow:hidden;
+    }
+    .hero::after { content:''; position:absolute; right:-60px; bottom:-80px; width:260px; height:260px; border-radius:50%; background:rgba(255,255,255,.05); }
+    .hero-inner { max-width:900px; margin:auto; position:relative; z-index:1; }
+    .badge {
+      display:inline-block; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.25);
+      border-radius:100px; padding:3px 12px; font-size:.72rem; font-weight:600; letter-spacing:1px;
+      text-transform:uppercase; margin-bottom:10px;
+    }
+    .hero h1 { font-family:'Space Grotesk',sans-serif; font-size:clamp(1.4rem,4vw,2rem); font-weight:700; line-height:1.2; margin-bottom:8px; }
+    .hero p  { font-size:.88rem; opacity:.82; max-width:580px; }
+
+    /* ── PAGE ── */
+    .page { max-width:1060px; margin:0 auto; padding:24px 5% 64px; display:flex; flex-direction:column; gap:18px; }
+
+    /* ── CARD ── */
+    .card { background:var(--white); border-radius:14px; border:1px solid var(--border); box-shadow:0 1px 3px rgba(0,0,0,.06); padding:20px 22px; }
+    .card-title {
+      font-family:'Space Grotesk',sans-serif; font-size:.7rem; font-weight:700;
+      letter-spacing:1.5px; text-transform:uppercase; color:var(--accent);
+      margin-bottom:14px; display:flex; align-items:center; gap:8px;
+    }
+    .card-title::after { content:''; flex:1; height:1px; background:var(--accent-light); }
+
+    /* ── INFO PILLS ── */
+    .pills { display:flex; flex-wrap:wrap; gap:10px; }
+    .pill { background:var(--accent-light); border:1px solid #b2dfdb; border-radius:10px; padding:10px 16px; }
+    .pill .lbl { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--accent-dark); margin-bottom:2px; }
+    .pill .val { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1rem; color:var(--dark); }
+
+    /* ── STATUS ── */
+    .status-pill { transition: background .3s, border-color .3s; }
+    .status-pill.ok .val { color: #2e7d32; }
+    .status-pill.alias .val { color: #c62828; }
+
+    /* ── CONTROLS ── */
+    .ctrl-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px 28px; }
+    @media(max-width:480px){ .ctrl-grid { grid-template-columns:1fr; } }
+    .ctrl-item label { display:flex; justify-content:space-between; align-items:center; font-size:.82rem; font-weight:600; color:var(--mid); margin-bottom:6px; }
+    .vbadge { background:var(--accent-dark); color:#fff; font-size:.72rem; font-weight:700; padding:1px 9px; border-radius:100px; font-family:'Space Grotesk',sans-serif; }
+    .ctrl-sub { font-size:.7rem; color:var(--muted); margin-top:3px; }
+    input[type=range] {
+      width:100%; height:4px; -webkit-appearance:none; appearance:none;
+      background:var(--border); border-radius:4px; outline:none; cursor:pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance:none; appearance:none; width:18px; height:18px; border-radius:50%;
+      background:var(--accent); border:2px solid #fff; box-shadow:0 1px 4px rgba(0,0,0,.2); cursor:pointer;
+    }
+    input[type=range]::-moz-range-thumb {
+      width:18px; height:18px; border-radius:50%; background:var(--accent); border:2px solid #fff; cursor:pointer;
+    }
+
+    /* ── PLOTS ── */
+    .plots-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    @media(max-width:640px){ .plots-grid { grid-template-columns:1fr; } }
+    .plot-card { padding:16px 18px; }
+    canvas { display:block; width:100%; border-radius:8px; }
+    .plot-canvas { height:260px; }
+    @media(min-width:768px){ .plot-canvas { height:320px; } }
+
+    /* Legend */
+    .legend { display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; }
+    .leg { display:flex; align-items:center; gap:6px; font-size:.73rem; font-weight:600; color:var(--mid); }
+    .leg-line { width:16px; height:3px; border-radius:2px; }
+    .leg-dot { width:8px; height:8px; border-radius:50%; }
+
+    /* ── CONCEPT ── */
+    .concept { background:linear-gradient(135deg,var(--accent-light),#f0faf9); border:1px solid #b2dfdb; border-radius:12px; padding:18px 22px; }
+    .concept h3 { font-family:'Space Grotesk',sans-serif; font-size:.88rem; font-weight:700; color:var(--accent-dark); margin-bottom:10px; }
+    .concept ul { list-style:none; display:flex; flex-direction:column; gap:7px; }
+    .concept li { font-size:.82rem; color:var(--mid); padding-left:14px; position:relative; line-height:1.55; }
+    .concept li::before { content:'\203A'; position:absolute; left:0; color:var(--accent); font-weight:700; }
+
+    /* ── FOOTER ── */
+    footer { background: var(--dark); color: rgba(255,255,255,.5); text-align: center; padding: 24px 5%; font-size: .78rem; }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── SCROLL ANIMATIONS ── */
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="index.html">epsiCTRON</a>
+  <ul id="nav-menu">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="resume.html">Resume</a></li>
+    <li><a href="breathe.html">Breathe</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-btn" id="theme-toggle" aria-label="Toggle dark mode">&#9790;</button>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<button class="btt" id="btt" aria-label="Back to top">&#8593;</button>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="badge">04 &middot; Sampling Theory</div>
+    <h1>Sampling &amp; Reconstruction</h1>
+    <p>Adjust the sampling rate to see how a continuous signal is captured as discrete samples. Drop below the Nyquist rate and watch aliasing distort the reconstructed waveform.</p>
+  </div>
+</section>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- Info pills -->
+  <div class="card">
+    <div class="card-title">Sampling Properties</div>
+    <div class="pills">
+      <div class="pill"><div class="lbl">Signal Frequency f</div><div class="val" id="info-f">3.00 Hz</div></div>
+      <div class="pill"><div class="lbl">Sampling Rate fs</div><div class="val" id="info-fs">16.0 Hz</div></div>
+      <div class="pill"><div class="lbl">Nyquist Rate 2f</div><div class="val" id="info-nyq">6.00 Hz</div></div>
+      <div class="pill status-pill ok"><div class="lbl">Status</div><div class="val" id="info-status">No Aliasing</div></div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="card">
+    <div class="card-title">Parameters</div>
+    <div class="ctrl-grid">
+
+      <div class="ctrl-item">
+        <label>Signal Frequency f (Hz) <span class="vbadge" id="lbl-f">3.00 Hz</span></label>
+        <input type="range" id="sl-f" min="0.5" max="12" value="3" step="0.1">
+        <div class="ctrl-sub">Frequency of the continuous sinusoid</div>
+      </div>
+
+      <div class="ctrl-item">
+        <label>Sampling Rate fs (Hz) <span class="vbadge" id="lbl-fs">16.0 Hz</span></label>
+        <input type="range" id="sl-fs" min="1" max="40" value="16" step="0.5">
+        <div class="ctrl-sub">How many samples per second are taken</div>
+      </div>
+
+      <div class="ctrl-item">
+        <label>Amplitude A <span class="vbadge" id="lbl-a">1.00</span></label>
+        <input type="range" id="sl-a" min="0.1" max="2" value="1" step="0.01">
+        <div class="ctrl-sub">Peak amplitude of the signal</div>
+      </div>
+
+      <div class="ctrl-item">
+        <label>Duration T (s) <span class="vbadge" id="lbl-t">2.0 s</span></label>
+        <input type="range" id="sl-t" min="0.5" max="4" value="2" step="0.1">
+        <div class="ctrl-sub">Observation window length</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Plots -->
+  <div class="plots-grid">
+
+    <div class="card plot-card">
+      <div class="card-title">Continuous Signal &amp; Samples</div>
+      <canvas id="c-time" class="plot-canvas"></canvas>
+      <div class="legend">
+        <div class="leg"><div class="leg-line" style="background:#3b82f6"></div>Original x(t)</div>
+        <div class="leg"><div class="leg-dot" style="background:#ef4444"></div>Samples x[n]</div>
+      </div>
+    </div>
+
+    <div class="card plot-card">
+      <div class="card-title">Reconstructed Signal</div>
+      <canvas id="c-recon" class="plot-canvas"></canvas>
+      <div class="legend">
+        <div class="leg"><div class="leg-line" style="background:#3b82f6;opacity:.35"></div>Original x(t)</div>
+        <div class="leg"><div class="leg-line" style="background:#10b981"></div>Reconstructed</div>
+        <div class="leg"><div class="leg-dot" style="background:#ef4444"></div>Samples</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Key Concepts -->
+  <div class="concept fade-in">
+    <h3>Key Concepts</h3>
+    <ul>
+      <li><strong>Nyquist&ndash;Shannon Theorem</strong> &mdash; a band-limited signal with max frequency f<sub>max</sub> can be perfectly reconstructed from samples if the sampling rate f<sub>s</sub> &ge; 2f<sub>max</sub>. The threshold 2f<sub>max</sub> is called the <em>Nyquist rate</em>.</li>
+      <li><strong>Aliasing</strong> &mdash; when f<sub>s</sub> &lt; 2f<sub>max</sub>, high-frequency components fold back to lower frequencies in the sampled signal, producing a phantom frequency f<sub>alias</sub> = |f &minus; k&middot;f<sub>s</sub>| for the nearest integer k.</li>
+      <li><strong>Sinc Interpolation</strong> &mdash; ideal reconstruction convolves the samples with a sinc function: x(t) = &Sigma; x[n]&middot;sinc((t &minus; nT<sub>s</sub>)/T<sub>s</sub>). This demo uses sinc interpolation to show the reconstructed waveform.</li>
+      <li><strong>Try this:</strong> Set f = 5 Hz and slowly lower f<sub>s</sub> from 40 Hz. Watch the reconstruction degrade as f<sub>s</sub> crosses the Nyquist rate (10 Hz), and observe the alias frequency.</li>
+    </ul>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+// ═══════════════════════════════════════════════════
+//  Constants & Colors
+// ═══════════════════════════════════════════════════
+const C_ORIG   = '#3b82f6';
+const C_SAMPLE = '#ef4444';
+const C_RECON  = '#10b981';
+const C_GHOST  = 'rgba(59,130,246,0.25)';
+
+const RENDER_PTS = 800; // points for continuous curves
+
+// ═══════════════════════════════════════════════════
+//  Helpers
+// ═══════════════════════════════════════════════════
+function niceStep(range, targetLines) {
+  if (range <= 0) return 1;
+  const raw  = range / targetLines;
+  const mag  = Math.pow(10, Math.floor(Math.log10(raw)));
+  const n    = raw / mag;
+  const nice = n < 1.5 ? 1 : n < 3 ? 2 : n < 7 ? 5 : 10;
+  return nice * mag;
+}
+
+function sinc(x) {
+  if (Math.abs(x) < 1e-12) return 1;
+  const px = Math.PI * x;
+  return Math.sin(px) / px;
+}
+
+// ═══════════════════════════════════════════════════
+//  Signal computation
+// ═══════════════════════════════════════════════════
+function continuousSignal(A, f, tMax) {
+  const pts = [];
+  for (let i = 0; i < RENDER_PTS; i++) {
+    const t = (i / (RENDER_PTS - 1)) * tMax;
+    pts.push({ x: t, y: A * Math.cos(2 * Math.PI * f * t) });
+  }
+  return pts;
+}
+
+function sampleSignal(A, f, fs, tMax) {
+  const Ts = 1 / fs;
+  const N  = Math.floor(tMax * fs) + 1;
+  const pts = [];
+  for (let n = 0; n < N; n++) {
+    const t = n * Ts;
+    if (t > tMax + 1e-9) break;
+    pts.push({ x: t, y: A * Math.cos(2 * Math.PI * f * t) });
+  }
+  return pts;
+}
+
+function reconstructSignal(samples, fs, tMax) {
+  const Ts  = 1 / fs;
+  const pts = [];
+  for (let i = 0; i < RENDER_PTS; i++) {
+    const t = (i / (RENDER_PTS - 1)) * tMax;
+    let val = 0;
+    for (let n = 0; n < samples.length; n++) {
+      val += samples[n].y * sinc((t - n * Ts) / Ts);
+    }
+    pts.push({ x: t, y: val });
+  }
+  return pts;
+}
+
+// ═══════════════════════════════════════════════════
+//  Generic canvas chart renderer
+// ═══════════════════════════════════════════════════
+function drawChart(canvas, seriesList, dotSeries, cfg) {
+  const dpr = window.devicePixelRatio || 1;
+  const cw  = canvas.clientWidth;
+  const ch  = canvas.clientHeight;
+  if (canvas.width  !== Math.round(cw * dpr) ||
+      canvas.height !== Math.round(ch * dpr)) {
+    canvas.width  = Math.round(cw * dpr);
+    canvas.height = Math.round(ch * dpr);
+  }
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const p  = v => v * dpr;
+  const ML = p(52), MR = p(16), MT = p(12), MB = p(42);
+  const PW = canvas.width  - ML - MR;
+  const PH = canvas.height - MT - MB;
+  const { xMin, xMax, yMin, yMax } = cfg;
+
+  const mx = x => ML + (x - xMin) / (xMax - xMin) * PW;
+  const my = y => MT + (1 - (y - yMin) / (yMax - yMin)) * PH;
+
+  // background
+  ctx.fillStyle = '#f8fafc';
+  ctx.fillRect(ML, MT, PW, PH);
+
+  ctx.font        = `${p(10)}px Inter,system-ui,sans-serif`;
+  ctx.fillStyle   = '#94a3b8';
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth   = p(0.75);
+
+  // Y grid
+  for (let y = Math.ceil(yMin / cfg.yStep) * cfg.yStep; y <= yMax + 1e-9; y += cfg.yStep) {
+    const py = my(y);
+    ctx.setLineDash([p(3), p(4)]);
+    ctx.beginPath(); ctx.moveTo(ML, py); ctx.lineTo(ML + PW, py); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    ctx.fillText(y.toFixed(cfg.yDec ?? 1), ML - p(6), py);
+  }
+
+  // X grid
+  for (let x = Math.ceil(xMin / cfg.xStep) * cfg.xStep; x <= xMax + 1e-9; x += cfg.xStep) {
+    const px = mx(x);
+    ctx.setLineDash([p(3), p(4)]);
+    ctx.beginPath(); ctx.moveTo(px, MT); ctx.lineTo(px, MT + PH); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText(x.toFixed(cfg.xDec ?? 0), px, MT + PH + p(5));
+  }
+
+  // zero line
+  if (yMin < 0 && yMax > 0) {
+    const py = my(0);
+    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = p(0.8);
+    ctx.beginPath(); ctx.moveTo(ML, py); ctx.lineTo(ML + PW, py); ctx.stroke();
+  }
+
+  // border
+  ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = p(1);
+  ctx.strokeRect(ML, MT, PW, PH);
+
+  // clip
+  ctx.save();
+  ctx.beginPath(); ctx.rect(ML, MT, PW, PH); ctx.clip();
+
+  // draw line series
+  seriesList.forEach(({ pts, color, lw, alpha }) => {
+    if (!pts || pts.length < 2) return;
+    ctx.globalAlpha = alpha ?? 1;
+    ctx.strokeStyle = color;
+    ctx.lineWidth   = p(lw ?? 1.8);
+    ctx.lineJoin    = 'round';
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    pts.forEach((pt, i) => {
+      const px = mx(pt.x);
+      const py = my(Math.max(yMin - 5, Math.min(yMax + 5, pt.y)));
+      i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+    });
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  });
+
+  // draw sample dots
+  if (dotSeries) {
+    dotSeries.forEach(({ pts, color, radius }) => {
+      const r = p(radius ?? 4);
+      pts.forEach(pt => {
+        const px = mx(pt.x);
+        const py = my(Math.max(yMin - 5, Math.min(yMax + 5, pt.y)));
+
+        // stem line
+        const py0 = my(0);
+        ctx.strokeStyle = color;
+        ctx.lineWidth   = p(1);
+        ctx.globalAlpha = 0.35;
+        ctx.beginPath(); ctx.moveTo(px, py0); ctx.lineTo(px, py); ctx.stroke();
+        ctx.globalAlpha = 1;
+
+        // dot
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, r, 0, 2 * Math.PI);
+        ctx.fill();
+      });
+    });
+  }
+
+  ctx.restore();
+
+  // axis labels
+  ctx.fillStyle    = '#64748b';
+  ctx.font         = `${p(10.5)}px Inter,system-ui,sans-serif`;
+  ctx.textBaseline = 'bottom'; ctx.textAlign = 'center';
+  ctx.fillText(cfg.xLabel, ML + PW / 2, canvas.height - p(2));
+
+  ctx.save();
+  ctx.translate(p(13), MT + PH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.textBaseline = 'top';
+  ctx.fillText(cfg.yLabel, 0, 0);
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════
+//  Render
+// ═══════════════════════════════════════════════════
+const cvTime  = document.getElementById('c-time');
+const cvRecon = document.getElementById('c-recon');
+
+function render() {
+  const f    = +document.getElementById('sl-f').value;
+  const fs   = +document.getElementById('sl-fs').value;
+  const A    = +document.getElementById('sl-a').value;
+  const tMax = +document.getElementById('sl-t').value;
+
+  // Update labels
+  document.getElementById('lbl-f').textContent  = f.toFixed(1) + ' Hz';
+  document.getElementById('lbl-fs').textContent = fs.toFixed(1) + ' Hz';
+  document.getElementById('lbl-a').textContent  = A.toFixed(2);
+  document.getElementById('lbl-t').textContent  = tMax.toFixed(1) + ' s';
+
+  // Info pills
+  const nyquist   = 2 * f;
+  const aliasing  = fs < nyquist;
+  document.getElementById('info-f').textContent   = f.toFixed(2) + ' Hz';
+  document.getElementById('info-fs').textContent  = fs.toFixed(1) + ' Hz';
+  document.getElementById('info-nyq').textContent = nyquist.toFixed(2) + ' Hz';
+
+  const statusPill = document.querySelector('.status-pill');
+  const statusVal  = document.getElementById('info-status');
+  if (aliasing) {
+    statusPill.classList.remove('ok');
+    statusPill.classList.add('alias');
+    // compute alias frequency
+    const k      = Math.round(f / fs);
+    const fAlias = Math.abs(f - k * fs);
+    statusVal.textContent = 'Aliased → ' + fAlias.toFixed(2) + ' Hz';
+  } else {
+    statusPill.classList.remove('alias');
+    statusPill.classList.add('ok');
+    statusVal.textContent = 'No Aliasing';
+  }
+
+  // Compute signals
+  const contPts    = continuousSignal(A, f, tMax);
+  const samples    = sampleSignal(A, f, fs, tMax);
+  const reconPts   = reconstructSignal(samples, fs, tMax);
+
+  const yPad  = A * 1.25;
+  const tStep = niceStep(tMax, 5);
+  const yStep = niceStep(yPad * 2, 5);
+
+  // ── Time domain: original + samples ──
+  drawChart(cvTime, [
+    { pts: contPts, color: C_ORIG, lw: 2 },
+  ], [
+    { pts: samples, color: C_SAMPLE, radius: 4 },
+  ], {
+    xMin: 0, xMax: tMax, yMin: -yPad, yMax: yPad,
+    xStep: tStep, yStep: yStep,
+    xLabel: 'Time (s)', yLabel: 'Amplitude',
+    xDec: 1, yDec: 1,
+  });
+
+  // ── Reconstruction ──
+  drawChart(cvRecon, [
+    { pts: contPts,  color: C_ORIG,  lw: 1.5, alpha: 0.3 },
+    { pts: reconPts, color: C_RECON, lw: 2.2 },
+  ], [
+    { pts: samples, color: C_SAMPLE, radius: 3 },
+  ], {
+    xMin: 0, xMax: tMax, yMin: -yPad, yMax: yPad,
+    xStep: tStep, yStep: yStep,
+    xLabel: 'Time (s)', yLabel: 'Amplitude',
+    xDec: 1, yDec: 1,
+  });
+}
+
+// ═══════════════════════════════════════════════════
+//  Events
+// ═══════════════════════════════════════════════════
+['sl-f', 'sl-fs', 'sl-a', 'sl-t'].forEach(id => {
+  document.getElementById(id).addEventListener('input', render);
+});
+window.addEventListener('resize', render);
+document.fonts.ready.then(render);
+
+// Scroll animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Dark mode
+const themeBtn = document.getElementById('theme-toggle');
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  themeBtn.innerHTML = t === 'dark' ? '&#9788;' : '&#9790;';
+  localStorage.setItem('theme', t);
+}
+themeBtn.addEventListener('click', () => {
+  setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+if (localStorage.getItem('theme') === 'dark') setTheme('dark');
+
+const hamburger = document.getElementById('hamburger');
+const navMenu = document.getElementById('nav-menu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  navMenu.classList.toggle('open');
+});
+
+const btt = document.getElementById('btt');
+window.addEventListener('scroll', () => { btt.classList.toggle('show', window.scrollY > 300); });
+btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+</script>
+
+<footer>
+  Built by Kishor KS &middot; <a href="index.html">Home</a> &middot; <a href="resume.html">Resume</a>
+</footer>
+</body>
+</html>
